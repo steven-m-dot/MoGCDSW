@@ -532,7 +532,7 @@
         // Data sources (configure)
         // =========================
         // 1) Primary initial load (local JSON file in same folder as this HTML)
-        const DASHBOARD_JSON_URL = './dashboard-data.json';
+        const DASHBOARD_JSON_URL = ./dashboard-data.json
 
         // Official documents (MoGCDSW shared folder – file IDs verified for this folder)
         const DEFAULT_OFFICIAL_DOCUMENTS = [
