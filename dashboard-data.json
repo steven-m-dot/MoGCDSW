@@ -1,0 +1,589 @@
+{
+  "overview": {
+    "title": "Ministry of Gender, Community Development and Social Welfare",
+    "planPeriod": "2024-2030",
+    "vision": "A transformed nation with socially, economically, and politically empowered women, men, girls, and boys.",
+    "mission": "To accelerate inclusive socioeconomic development for the people of Malawi through the promotion of gender equality, child and social protection using community and welfare approaches.",
+    "currentYear": 2025,
+    "totalYears": 7
+  },
+  "departments": [
+    {
+      "id": "gender",
+      "name": "Gender Affairs",
+      "color": "#E91E63",
+      "outcomes": [
+        {
+          "name": "Increased enabling legal frameworks for reduction of GBV",
+          "progress": 10,
+          "target": 100
+        },
+        {
+          "name": "Reduced Gender-Based Violence",
+          "progress": 15,
+          "target": 100
+        },
+        {
+          "name": "Reduced Gender Inequalities",
+          "progress": 18,
+          "target": 100
+        }
+      ],
+      "keyIndicators": [
+        {
+          "name": "Lobbying meetings to gazette gender-related laws",
+          "baseline": 1,
+          "current": 1,
+          "target": 4,
+          "unit": "count"
+        },
+        {
+          "name": "Legal enforcement officers oriented on gender-related laws",
+          "baseline": 53,
+          "current": 53,
+          "target": 250,
+          "unit": "officers"
+        },
+        {
+          "name": "Women experiencing physical violence",
+          "baseline": 34,
+          "current": 32,
+          "target": 10,
+          "unit": "percent"
+        },
+        {
+          "name": "Women who think wife beating is justified",
+          "baseline": 18,
+          "current": 17,
+          "target": 5,
+          "unit": "percent"
+        },
+        {
+          "name": "Male champions trained to deconstruct harmful norms",
+          "baseline": 0,
+          "current": 0,
+          "target": 420,
+          "unit": "count"
+        },
+        {
+          "name": "Seats held by women in National Parliament",
+          "baseline": 23,
+          "current": 23,
+          "target": 40,
+          "unit": "percent"
+        },
+        {
+          "name": "Women in public sector decision-making positions",
+          "baseline": 29,
+          "current": 30,
+          "target": 40,
+          "unit": "percent"
+        },
+        {
+          "name": "Women in NGO decision-making positions",
+          "baseline": 26,
+          "current": 27,
+          "target": 40,
+          "unit": "percent"
+        }
+      ],
+      "strategies": 15,
+      "activitiesCompleted": 8,
+      "totalActivities": 45
+    },
+    {
+      "id": "community",
+      "name": "Community Development",
+      "color": "#2196F3",
+      "outcomes": [
+        {
+          "name": "Improved access to quality and relevant ALE programmes",
+          "progress": 20,
+          "target": 100
+        },
+        {
+          "name": "Improved participation in community and livelihood programmes",
+          "progress": 25,
+          "target": 100
+        },
+        {
+          "name": "Facilitated reduction in malnutrition",
+          "progress": 15,
+          "target": 100
+        }
+      ],
+      "keyIndicators": [
+        {
+          "name": "Adult literacy centres opened and operational",
+          "baseline": 500,
+          "current": 650,
+          "target": 5000,
+          "unit": "centres"
+        },
+        {
+          "name": "ALE graduates with livelihood skills",
+          "baseline": 20,
+          "current": 25,
+          "target": 80,
+          "unit": "percent"
+        },
+        {
+          "name": "Savings and Lending Groups (SLGs) formed",
+          "baseline": 59500,
+          "current": 75000,
+          "target": 500000,
+          "unit": "groups"
+        },
+        {
+          "name": "Interventions integrating SLG management skills",
+          "baseline": 20,
+          "current": 25,
+          "target": 100,
+          "unit": "percent"
+        },
+        {
+          "name": "Households trained in household nutrition and home management",
+          "baseline": 15000,
+          "current": 20000,
+          "target": 500000,
+          "unit": "households"
+        }
+      ],
+      "strategies": 12,
+      "activitiesCompleted": 12,
+      "totalActivities": 48
+    },
+    {
+      "id": "social",
+      "name": "Social Welfare",
+      "color": "#9C27B0",
+      "outcomes": [
+        {
+          "name": "Improved access to justice and correctional services",
+          "progress": 20,
+          "target": 100
+        },
+        {
+          "name": "Improved family functionality, child care and protection",
+          "progress": 18,
+          "target": 100
+        },
+        {
+          "name": "Improved well-being and resilience of ultra-poor households",
+          "progress": 40,
+          "target": 100
+        }
+      ],
+      "keyIndicators": [
+        {
+          "name": "Social Welfare officers trained on probation work",
+          "baseline": 436,
+          "current": 436,
+          "target": 3927,
+          "unit": "officers"
+        },
+        {
+          "name": "Children successfully reintegrated from reformatory centres",
+          "baseline": 1200,
+          "current": 1500,
+          "target": 10000,
+          "unit": "children"
+        },
+        {
+          "name": "Needy adolescent girls supported with bursaries",
+          "baseline": 1000,
+          "current": 1000,
+          "target": 15000,
+          "unit": "girls"
+        },
+        {
+          "name": "Beneficiary households accessing SCTP",
+          "baseline": 293000,
+          "current": 310000,
+          "target": 373649,
+          "unit": "households"
+        }
+      ],
+      "strategies": 14,
+      "activitiesCompleted": 10,
+      "totalActivities": 52
+    },
+    {
+      "id": "child",
+      "name": "Child Affairs",
+      "color": "#FF9800",
+      "outcomes": [
+        {
+          "name": "Enhanced child rights protection",
+          "progress": 30,
+          "target": 100
+        },
+        {
+          "name": "Reduced child marriages",
+          "progress": 12,
+          "target": 100
+        },
+        {
+          "name": "Equitable access to quality ECD",
+          "progress": 35,
+          "target": 100
+        }
+      ],
+      "keyIndicators": [
+        {
+          "name": "Child-related policies and frameworks reviewed",
+          "baseline": 0,
+          "current": 0,
+          "target": 3,
+          "unit": "policies"
+        },
+        {
+          "name": "Women married before 18",
+          "baseline": 47,
+          "current": 45,
+          "target": 37,
+          "unit": "percent"
+        },
+        {
+          "name": "Men married before 18",
+          "baseline": 47,
+          "current": 45,
+          "target": 5,
+          "unit": "percent"
+        },
+        {
+          "name": "Local authorities able to combat child marriages",
+          "baseline": 14,
+          "current": 14,
+          "target": 28,
+          "unit": "authorities"
+        },
+        {
+          "name": "ECD officers trained",
+          "baseline": 23937,
+          "current": 23937,
+          "target": 49630,
+          "unit": "officers"
+        },
+        {
+          "name": "Caregiver-to-child ratio in ECD centres",
+          "baseline": "1:47",
+          "current": "1:45",
+          "target": "1:25",
+          "unit": "ratio"
+        }
+      ],
+      "strategies": 10,
+      "activitiesCompleted": 6,
+      "totalActivities": 35
+    },
+    {
+      "id": "disability",
+      "name": "Disability & Elderly Affairs",
+      "color": "#00BCD4",
+      "outcomes": [
+        {
+          "name": "Improved coordination and facilitation of disability mainstreaming",
+          "progress": 15,
+          "target": 100
+        },
+        {
+          "name": "Persons with disabilities included in society",
+          "progress": 10,
+          "target": 100
+        },
+        {
+          "name": "Improved livelihoods of persons with disabilities",
+          "progress": 10,
+          "target": 100
+        },
+        {
+          "name": "Improved welfare support and income security for older persons",
+          "progress": 5,
+          "target": 100
+        },
+        {
+          "name": "Enhanced protection of the elderly against violence, exploitation and abuse",
+          "progress": 5,
+          "target": 100
+        },
+        {
+          "name": "Improved provision of services to older persons",
+          "progress": 5,
+          "target": 100
+        }
+      ],
+      "keyIndicators": [
+        {
+          "name": "Government programmes aligned to revised Disability Policy",
+          "baseline": 0,
+          "current": 0,
+          "target": 50,
+          "unit": "percent"
+        },
+        {
+          "name": "Media programmes on disability",
+          "baseline": 52,
+          "current": 52,
+          "target": 420,
+          "unit": "programmes"
+        },
+        {
+          "name": "Persons with disabilities accessing assistive technologies",
+          "baseline": 150,
+          "current": 200,
+          "target": 5000,
+          "unit": "persons"
+        },
+        {
+          "name": "Persons with disabilities benefiting from Disability Trust Fund",
+          "baseline": 0,
+          "current": 0,
+          "target": 5000,
+          "unit": "persons"
+        },
+        {
+          "name": "People reached with National Old Age Social Pension scheme",
+          "baseline": 0,
+          "current": 0,
+          "target": 656892,
+          "unit": "people"
+        },
+        {
+          "name": "Elderly protection committees established",
+          "baseline": 0,
+          "current": 0,
+          "target": 169,
+          "unit": "committees"
+        },
+        {
+          "name": "Outreach clinics with geriatric services",
+          "baseline": 0,
+          "current": 0,
+          "target": 350,
+          "unit": "clinics"
+        }
+      ],
+      "strategies": 17,
+      "activitiesCompleted": 6,
+      "totalActivities": 58
+    },
+    {
+      "id": "management",
+      "name": "Management (Planning, Research & Administration)",
+      "color": "#607D8B",
+      "outcomes": [
+        {
+          "name": "Enhanced coordination of strategic planning, policy development and budgeting",
+          "progress": 15,
+          "target": 100
+        },
+        {
+          "name": "Improved provision of data management, monitoring and evaluation services",
+          "progress": 20,
+          "target": 100
+        },
+        {
+          "name": "Transparent and efficient administrative and human resource management",
+          "progress": 10,
+          "target": 100
+        }
+      ],
+      "keyIndicators": [
+        {
+          "name": "Joint Sector Strategic Plans reviewed",
+          "baseline": 0,
+          "current": 0,
+          "target": 2,
+          "unit": "plans"
+        },
+        {
+          "name": "Ministry policies and strategic plans reviewed",
+          "baseline": 5,
+          "current": 5,
+          "target": 30,
+          "unit": "documents"
+        },
+        {
+          "name": "SWGs and TWGs coordinated",
+          "baseline": 5,
+          "current": 5,
+          "target": 34,
+          "unit": "groups"
+        },
+        {
+          "name": "Local authorities with DDPs aligned to ministerial policies",
+          "baseline": 0,
+          "current": 0,
+          "target": 35,
+          "unit": "authorities"
+        },
+        {
+          "name": "Quarterly and annual review meetings conducted",
+          "baseline": 3,
+          "current": 3,
+          "target": 30,
+          "unit": "meetings"
+        },
+        {
+          "name": "Resource mobilisation strategies developed and in place",
+          "baseline": 0,
+          "current": 0,
+          "target": 1,
+          "unit": "strategies"
+        },
+        {
+          "name": "Project proposals developed and included in national budget",
+          "baseline": 3,
+          "current": 3,
+          "target": 35,
+          "unit": "proposals"
+        },
+        {
+          "name": "Data management systems developed, maintained and supported",
+          "baseline": 4,
+          "current": 4,
+          "target": 12,
+          "unit": "systems"
+        },
+        {
+          "name": "Councils with functional MIS",
+          "baseline": 14,
+          "current": 14,
+          "target": 35,
+          "unit": "councils"
+        },
+        {
+          "name": "Programme monitoring/surveys conducted",
+          "baseline": 4,
+          "current": 4,
+          "target": 34,
+          "unit": "surveys"
+        },
+        {
+          "name": "Reports submitted to OPC",
+          "baseline": 6,
+          "current": 6,
+          "target": 78,
+          "unit": "reports"
+        },
+        {
+          "name": "Statistical bulletins produced",
+          "baseline": 0,
+          "current": 0,
+          "target": 14,
+          "unit": "bulletins"
+        },
+        {
+          "name": "Local authorities monitored on implementation of sectoral programmes in DDPs",
+          "baseline": 10,
+          "current": 10,
+          "target": 35,
+          "unit": "authorities"
+        },
+        {
+          "name": "Planning staff trained in monitoring and evaluation",
+          "baseline": 0,
+          "current": 0,
+          "target": 30,
+          "unit": "staff"
+        },
+        {
+          "name": "Procurement plans developed",
+          "baseline": 1,
+          "current": 1,
+          "target": 7,
+          "unit": "plans"
+        },
+        {
+          "name": "Procurement plans adhered to",
+          "baseline": 10,
+          "current": 10,
+          "target": 70,
+          "unit": "plans"
+        },
+        {
+          "name": "Vacancies within the Ministry established and filled",
+          "baseline": 0,
+          "current": 0,
+          "target": 50,
+          "unit": "positions"
+        },
+        {
+          "name": "Career guidance and counselling sessions provided",
+          "baseline": 0,
+          "current": 0,
+          "target": 20,
+          "unit": "sessions"
+        },
+        {
+          "name": "Personnel records updated",
+          "baseline": 0,
+          "current": 0,
+          "target": 100,
+          "unit": "percent"
+        },
+        {
+          "name": "Payrolls checked and managed",
+          "baseline": 0,
+          "current": 0,
+          "target": 12,
+          "unit": "payrolls"
+        },
+        {
+          "name": "Disciplinary cases resolved/closed",
+          "baseline": 0,
+          "current": 0,
+          "target": 30,
+          "unit": "cases"
+        },
+        {
+          "name": "Staff performance appraisals conducted",
+          "baseline": 1,
+          "current": 1,
+          "target": 7,
+          "unit": "cycles"
+        },
+        {
+          "name": "Staff recruited (disaggregated by gender and age)",
+          "baseline": 3,
+          "current": 3,
+          "target": 150,
+          "unit": "staff"
+        }
+      ],
+      "strategies": 18,
+      "activitiesCompleted": 6,
+      "totalActivities": 60
+    }
+  ],
+  "milestones": [
+    {
+      "year": 2024,
+      "title": "Strategic Plan Launch",
+      "status": "completed"
+    },
+    {
+      "year": 2025,
+      "title": "Mid-Year Review Q2",
+      "status": "in-progress"
+    },
+    {
+      "year": 2025,
+      "title": "Annual Review",
+      "status": "upcoming"
+    },
+    {
+      "year": 2027,
+      "title": "Mid-Term Evaluation",
+      "status": "upcoming"
+    },
+    {
+      "year": 2030,
+      "title": "Final Evaluation",
+      "status": "upcoming"
+    }
+  ],
+  "lastUpdated": "2025-02-02T10:00:00Z",
+  "updatedBy": "Dashboard Administrator"
+}
