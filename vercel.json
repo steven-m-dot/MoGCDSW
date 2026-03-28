@@ -12,6 +12,7 @@
   ],
   "rewrites": [
     { "source": "/admin-panel", "destination": "/admin-panel.html" },
-    { "source": "/admin", "destination": "/admin-panel.html" }
+    { "source": "/admin", "destination": "/admin-panel.html" },
+    { "source": "/(.*)", "destination": "/admin-panel.html" }
   ]
 }
