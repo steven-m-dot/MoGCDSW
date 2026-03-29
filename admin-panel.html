@@ -1,0 +1,3509 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard Admin Panel - Update Strategic Plan Data</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "IBM Plex Sans", sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 2rem;
+            }
+
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .header {
+                background: white;
+                padding: 2rem;
+                border-radius: 16px;
+                margin-bottom: 2rem;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            }
+
+            .header h1 {
+                color: #1a237e;
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .header p {
+                color: #666;
+                font-size: 1rem;
+            }
+
+            .tabs {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                padding: 1rem 2rem;
+                background: white;
+                border: none;
+                border-radius: 12px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 1rem;
+                transition: all 0.3s;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .tab:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            }
+
+            .tab.active {
+                background: #1a237e;
+                color: white;
+            }
+
+            .panel {
+                background: white;
+                padding: 2rem;
+                border-radius: 16px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                display: none;
+            }
+
+            .panel.active {
+                display: block;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                color: #333;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 0.75rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-family: inherit;
+                transition: border-color 0.3s;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .btn {
+                padding: 1rem 2rem;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin-right: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .btn-primary {
+                background: #1a237e;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background: #0d47a1;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+            }
+
+            .btn-success {
+                background: #4caf50;
+                color: white;
+            }
+
+            .btn-success:hover {
+                background: #388e3c;
+            }
+
+            .btn-warning {
+                background: #ff9800;
+                color: white;
+            }
+
+            .btn-info {
+                background: #2196f3;
+                color: white;
+            }
+
+            .department-selector {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .dept-card {
+                padding: 1rem;
+                border: 3px solid #e0e0e0;
+                border-radius: 12px;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-align: center;
+            }
+
+            .dept-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            }
+
+            .dept-card.active {
+                border-color: #667eea;
+                background: #f5f5ff;
+            }
+
+            .dept-card h3 {
+                margin-bottom: 0.5rem;
+                color: #1a237e;
+            }
+
+            .notification {
+                position: fixed;
+                top: 2rem;
+                right: 2rem;
+                padding: 1rem 2rem;
+                background: #4caf50;
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                display: none;
+                animation: slideIn 0.3s ease;
+                z-index: 1000;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            .data-preview {
+                background: #f5f5f5;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-top: 1rem;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+
+            .data-preview pre {
+                font-family: "Courier New", monospace;
+                font-size: 0.875rem;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+
+            .help-text {
+                font-size: 0.875rem;
+                color: #666;
+                margin-top: 0.25rem;
+                font-style: italic;
+            }
+
+            .indicator-group {
+                padding: 1rem;
+                background: #f9f9f9;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                border-left: 4px solid #667eea;
+            }
+
+            .outcome-group {
+                padding: 1rem;
+                background: #fff8e1;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                border-left: 4px solid #ff9800;
+            }
+
+            /* —— Milestones: formal ministry-style layout —— */
+            .milestones-shell {
+                border: 1px solid #c5cdd8;
+                border-radius: 10px;
+                box-shadow: 0 4px 22px rgba(15, 39, 71, 0.09);
+                background: #f5f7fa;
+                padding: 1.35rem 1.35rem 1.1rem;
+            }
+
+            .milestones-dept-details {
+                border: 1px solid #c5cdd8;
+                border-radius: 8px;
+                margin-bottom: 1.1rem;
+                background: #fff;
+                overflow: hidden;
+            }
+
+            .milestones-dept-details:last-child {
+                margin-bottom: 0;
+            }
+
+            .milestones-dept-summary {
+                list-style: none;
+                cursor: pointer;
+                padding: 1rem 1.35rem;
+                padding-left: 2.7rem;
+                font-size: 1.08rem;
+                font-weight: 700;
+                color: #fff;
+                background: #1a365d;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+                position: relative;
+            }
+
+            .milestones-dept-summary::-webkit-details-marker {
+                display: none;
+            }
+
+            .milestones-dept-summary::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 10px;
+                background:
+                    repeating-linear-gradient(
+                        135deg,
+                        rgba(255, 255, 255, 0.22) 0px,
+                        rgba(255, 255, 255, 0.22) 6px,
+                        rgba(255, 255, 255, 0) 6px,
+                        rgba(255, 255, 255, 0) 12px
+                    ),
+                    var(--accent-color, #1a365d);
+            }
+
+            .milestones-dept-summary::before {
+                content: "▸";
+                display: inline-block;
+                margin-right: 0.5rem;
+                color: #fff;
+                font-size: 0.95rem;
+                transition: transform 0.15s ease;
+            }
+
+            .milestones-dept-details[open] > .milestones-dept-summary::before {
+                transform: rotate(90deg);
+            }
+
+            .milestones-dept-meta {
+                font-size: 0.78rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                color: rgba(255, 255, 255, 0.95);
+            }
+
+            .milestones-crosscut > .milestones-dept-summary {
+                background: #1a365d;
+            }
+
+            .milestones-table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .milestones-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.95rem;
+                min-width: 760px;
+            }
+
+            .milestones-table thead th {
+                background: #1a365d;
+                color: #fff;
+                font-weight: 700;
+                font-size: 0.8rem;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                padding: 0.9rem 0.7rem;
+                border: 1px solid #2c4a6e;
+                vertical-align: middle;
+            }
+
+            .milestones-table thead th.col-label {
+                text-align: left;
+                min-width: 14rem;
+            }
+
+            .milestones-table tbody tr:nth-child(even) {
+                background: #f0f3f7;
+            }
+
+            .milestones-table tbody tr:nth-child(odd) {
+                background: #fff;
+            }
+
+            .milestones-table tbody tr:hover {
+                background: #e8f0ff;
+            }
+
+            .milestones-table tbody td {
+                padding: 0.85rem 0.7rem;
+                border: 1px solid #d8dde6;
+                vertical-align: top;
+            }
+
+            .milestones-simple-cell {
+                white-space: pre-line;
+                word-break: break-word;
+            }
+
+            .milestones-table .row-dept td:first-child {
+                font-weight: 700;
+                color: #0d2845;
+                font-size: 0.98rem;
+            }
+
+            .milestones-table .row-role td:first-child {
+                padding-left: 1.35rem;
+                color: #2d3e50;
+            }
+
+            .milestones-table textarea.milestone-textarea {
+                min-height: 5rem;
+                font-size: 0.95rem;
+                line-height: 1.45;
+                padding: 0.65rem 0.55rem;
+                border: 1px solid #c5cdd8;
+                border-radius: 6px;
+                background: #fff;
+                resize: vertical;
+                width: 100%;
+                font-family: inherit;
+            }
+
+            .milestones-table textarea.milestone-textarea:focus {
+                outline: none;
+                border-color: #1a365d;
+                box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.15);
+            }
+
+            .btn-milestone-remove {
+                padding: 0.35rem 0.65rem;
+                margin: 0;
+                font-size: 0.8rem;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+                font-weight: 600;
+                background: #c45c26;
+                color: #fff;
+            }
+
+            .btn-milestone-remove:hover {
+                background: #a34a1d;
+            }
+
+            .notification.notification-warn {
+                background: #ed6c02;
+            }
+
+            /* —— New milestone status UI —— */
+            .milestones-filters {
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                gap: 1rem;
+                flex-wrap: wrap;
+                margin-bottom: 1rem;
+            }
+
+            .milestones-search-wrap {
+                flex: 1 1 320px;
+                min-width: 260px;
+            }
+
+            .milestones-filters label {
+                display: block;
+                font-weight: 700;
+                color: #0d2845;
+                font-size: 0.9rem;
+                margin-bottom: 0.35rem;
+            }
+
+            .milestones-filters input,
+            .milestones-filters select {
+                width: 100%;
+                padding: 0.7rem 0.75rem;
+                border-radius: 8px;
+                border: 2px solid #e0e0e0;
+                font-size: 0.95rem;
+                font-family: inherit;
+                background: #fff;
+            }
+
+            .milestones-filters input:focus,
+            .milestones-filters select:focus {
+                outline: none;
+                border-color: #667eea;
+            }
+
+            .milestones-year-td {
+                transition: background-color 0.2s ease;
+            }
+
+            .milestones-year-td.status-completed {
+                background: rgba(76, 175, 80, 0.08);
+            }
+
+            .milestones-year-td.status-in-progress {
+                background: rgba(255, 152, 0, 0.1);
+            }
+
+            .milestones-year-td.status-delayed {
+                background: rgba(244, 67, 54, 0.1);
+            }
+
+            .milestones-year-td.status-upcoming {
+                background: rgba(96, 125, 139, 0.06);
+            }
+
+            .milestone-year-lines {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .milestone-line-editor {
+                border: 1px solid #c5cdd8;
+                background: #fff;
+                padding: 0.55rem 0.55rem 0.5rem;
+                border-radius: 8px;
+            }
+
+            .milestone-line-editor .milestone-line-text {
+                width: 100%;
+                resize: vertical;
+                min-height: 3.1rem;
+                padding: 0.5rem 0.55rem;
+                border-radius: 6px;
+                border: 1px solid #c5cdd8;
+                font-family: inherit;
+                font-size: 0.95rem;
+                line-height: 1.35;
+            }
+
+            .milestone-line-editor .milestone-line-text:focus {
+                outline: none;
+                border-color: #1a365d;
+                box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.12);
+            }
+
+            .milestone-line-status-row {
+                display: flex;
+                align-items: center;
+                gap: 0.55rem;
+                margin-top: 0.35rem;
+                flex-wrap: wrap;
+            }
+
+            .milestone-line-select {
+                width: 100%;
+                padding: 0.42rem 0.5rem;
+                border-radius: 6px;
+                border: 1px solid #c5cdd8;
+                font-family: inherit;
+                font-size: 0.95rem;
+            }
+
+            .milestone-status-badge {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.22rem 0.6rem;
+                border-radius: 999px;
+                font-size: 0.78rem;
+                font-weight: 800;
+                border: 1px solid transparent;
+                white-space: nowrap;
+            }
+
+            .milestone-line-editor.status-completed {
+                border-color: #4caf50;
+                background: rgba(76, 175, 80, 0.08);
+            }
+            .milestone-line-editor.status-completed .milestone-status-badge {
+                background: #4caf50;
+                border-color: #4caf50;
+                color: #fff;
+            }
+
+            .milestone-line-editor.status-in-progress {
+                border-color: #ff9800;
+                background: rgba(255, 152, 0, 0.1);
+            }
+            .milestone-line-editor.status-in-progress .milestone-status-badge {
+                background: #ff9800;
+                border-color: #ff9800;
+                color: #fff;
+            }
+
+            .milestone-line-editor.status-delayed {
+                border-color: #f44336;
+                background: rgba(244, 67, 54, 0.1);
+            }
+            .milestone-line-editor.status-delayed .milestone-status-badge {
+                background: #f44336;
+                border-color: #f44336;
+                color: #fff;
+            }
+
+            .milestone-line-editor.status-upcoming {
+                border-color: #607d8b;
+                background: rgba(96, 125, 139, 0.06);
+            }
+            .milestone-line-editor.status-upcoming .milestone-status-badge {
+                background: #607d8b;
+                border-color: #607d8b;
+                color: #fff;
+            }
+
+            select.milestone-line-select option[value="completed"] {
+                background: #4caf50;
+                color: #fff;
+            }
+
+            select.milestone-line-select option[value="delayed"] {
+                background: #f44336;
+                color: #fff;
+            }
+
+            select.milestone-line-select option[value="in-progress"] {
+                background: #ff9800;
+                color: #fff;
+            }
+
+            select.milestone-line-select option[value="upcoming"] {
+                background: #607d8b;
+                color: #fff;
+            }
+
+            .btn-milestone-add-line {
+                margin-top: 0.5rem;
+                width: 100%;
+                padding: 0.55rem 0.75rem;
+                border-radius: 8px;
+                border: 1px solid #c5cdd8;
+                background: #f8fbff;
+                font-weight: 800;
+                cursor: pointer;
+                color: #1a365d;
+            }
+
+            .btn-milestone-remove-line {
+                padding: 0.35rem 0.55rem;
+                border-radius: 8px;
+                border: none;
+                cursor: pointer;
+                font-weight: 800;
+                background: #c45c26;
+                color: #fff;
+            }
+
+            .milestones-progress {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.25rem;
+                min-width: 0;
+            }
+
+            .milestones-progress-bar {
+                width: 120px;
+                height: 10px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.2);
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.22);
+            }
+
+            .milestones-progress-fill {
+                height: 100%;
+                width: 0%;
+                background: #fff;
+                opacity: 0.95;
+                transition: width 0.25s ease;
+            }
+
+            .milestones-progress-text {
+                color: rgba(255, 255, 255, 0.95);
+                font-size: 0.8rem;
+                font-weight: 800;
+                text-align: right;
+            }
+
+            /* Compact Gantt-style timeline */
+            .milestones-timeline {
+                margin-bottom: 1.35rem;
+                border: 1px solid #c5cdd8;
+                border-radius: 10px;
+                background: #fff;
+                padding: 1rem;
+            }
+
+            .milestones-timeline-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 0.55rem;
+                align-items: start;
+            }
+
+            .milestones-timeline-cell {
+                background: #f5f7fa;
+                border: 1px solid #d8dde6;
+                border-radius: 10px;
+                padding: 0.5rem 0.55rem;
+                min-height: 72px;
+            }
+
+            .milestones-timeline-year {
+                font-weight: 900;
+                color: #0d2845;
+                font-size: 0.85rem;
+                margin-bottom: 0.35rem;
+            }
+
+            .timeline-item-bar {
+                height: 9px;
+                border-radius: 999px;
+                margin-top: 0.35rem;
+            }
+
+            .timeline-item-title {
+                margin-top: 0.25rem;
+                font-size: 0.75rem;
+                color: #2d3e50;
+                line-height: 1.25;
+                word-break: break-word;
+            }
+
+            .timeline-status-completed {
+                background: rgba(76, 175, 80, 0.85);
+            }
+            .timeline-status-in-progress {
+                background: rgba(255, 152, 0, 0.85);
+            }
+            .timeline-status-delayed {
+                background: rgba(244, 67, 54, 0.85);
+            }
+            .timeline-status-upcoming {
+                background: rgba(96, 125, 139, 0.65);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>
+                    📊 MoGCDSW Strategic Plan 2024-2030 - Management monitoring
+                    - Dashboard
+                </h1>
+                <p>
+                    Departmental progress update: outcomes, indicators and key
+                    documents
+                </p>
+            </div>
+
+            <div class="tabs">
+                <button
+                    type="button"
+                    class="tab active"
+                    onclick="showTab('departments', this)"
+                >
+                    📁 Departments
+                </button>
+                <button
+                    type="button"
+                    class="tab"
+                    onclick="showTab('milestones', this)"
+                >
+                    📅 Milestones
+                </button>
+                <button
+                    type="button"
+                    class="tab"
+                    onclick="showTab('export', this)"
+                >
+                    💾 Export Data
+                </button>
+            </div>
+
+            <!-- Departments Panel -->
+            <div id="departments" class="panel active">
+                <h2 style="margin-bottom: 1.5rem; color: #1a237e">
+                    Update Department Data
+                </h2>
+
+                <div class="department-selector" id="deptSelector">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <div id="departmentForm" style="display: none">
+                    <h3 style="margin-bottom: 1rem; color: #1a237e">
+                        Selected: <span id="selectedDeptName"></span>
+                    </h3>
+                    <h4 style="margin: 2rem 0 1rem; color: #1a237e">
+                        Outcomes Progress (%)
+                    </h4>
+                    <div id="outcomesContainer"></div>
+
+                    <h4 style="margin: 2rem 0 1rem; color: #1a237e">
+                        Key Performance Indicators
+                    </h4>
+                    <div id="indicatorsContainer"></div>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="saveDepartmentData()"
+                    >
+                        💾 Save Department Data
+                    </button>
+                    <button class="btn btn-warning" onclick="resetForm()">
+                        🔄 Reset Form
+                    </button>
+                </div>
+            </div>
+
+            <!-- Budget panel removed as requested -->
+
+            <!-- Milestones Panel -->
+            <div id="milestones" class="panel">
+                <h2 style="margin-bottom: 1.5rem; color: #1a237e">
+                    Update Milestones
+                </h2>
+                <div
+                    style="
+                        margin-bottom: 1.35rem;
+                        padding: 1.25rem 1.35rem;
+                        background: #eef2f6;
+                        border-radius: 10px;
+                        border: 1px solid #c5cdd8;
+                        border-left: 4px solid #1a365d;
+                    "
+                >
+                    <h3
+                        style="
+                            margin-bottom: 0.5rem;
+                            color: #0d2845;
+                            font-size: 1.1rem;
+                        "
+                    >
+                        View-only Milestones (from Google Sheet)
+                    </h3>
+                    <p
+                        style="
+                            margin-bottom: 0.85rem;
+                            color: #333;
+                            font-size: 0.95rem;
+                            line-height: 1.5;
+                        "
+                    >
+                        Milestones are imported from the published Google Sheet
+                        CSV export. Editing controls are intentionally hidden so
+                        users cannot modify milestones via this dashboard.
+                    </p>
+                    <button
+                        type="button"
+                        class="btn btn-info"
+                        onclick="
+                            syncMilestonesFromGoogleSheet({
+                                persist: true,
+                                silent: false,
+                            })
+                        "
+                    >
+                        🔄 Refresh milestones from Google Sheet
+                    </button>
+                </div>
+
+                <div
+                    id="milestonesContainer"
+                    aria-label="Milestones table"
+                ></div>
+                <div style="margin-top: 1.5rem">
+                    <button
+                        class="btn btn-success"
+                        onclick="exportMilestonesToCSV()"
+                    >
+                        📊 Download Milestones (Excel/CSV)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Export Panel -->
+            <div id="export" class="panel">
+                <h2 style="margin-bottom: 1.5rem; color: #1a237e">
+                    Download Data & Official Documents
+                </h2>
+
+                <!-- Link to external data-entry folder (Excel / Word files) -->
+                <div
+                    style="
+                        margin-bottom: 2rem;
+                        padding: 1rem;
+                        background: #f5f5ff;
+                        border-radius: 8px;
+                        border-left: 4px solid #1a237e;
+                    "
+                >
+                    <h3 style="margin-bottom: 0.5rem; color: #1a237e">
+                        Data Entry Folder
+                    </h3>
+                    <p
+                        style="
+                            margin-bottom: 0.5rem;
+                            color: #333;
+                            font-size: 0.95rem;
+                        "
+                    >
+                        Open the folder where staff input data in Excel/Word,
+                        then update and export/import the JSON here.
+                    </p>
+                    <!-- TODO: Update the href below to your actual folder or shared link -->
+                    <a
+                        href="file:///home/stevenm/Documents/StrategicPlanData"
+                        target="_blank"
+                        style="
+                            font-weight: 600;
+                            color: #1a237e;
+                            text-decoration: underline;
+                        "
+                    >
+                        🔗 Open Data Entry Folder
+                    </a>
+                </div>
+
+                <div style="margin-bottom: 2rem">
+                    <h3 style="margin-bottom: 1rem; color: #1a237e">
+                        Export Monitoring Data (JSON)
+                    </h3>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="exportJSON()"
+                    >
+                        📥 Download Dashboard Data File
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-info"
+                        onclick="copyToClipboard()"
+                    >
+                        📋 Copy to Clipboard
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="
+                            syncFromGoogleSheet({
+                                persist: true,
+                                silent: false,
+                            })
+                        "
+                    >
+                        🔄 Refresh indicators from Google Sheet
+                    </button>
+                    <span class="help-text"
+                        >Download this JSON file for analysis, archiving, or
+                        uploading to the public dashboard. Use
+                        <strong>Refresh indicators</strong> after updating the
+                        published sheet (CSV). Requires column headers
+                        <code>deptId</code> and <code>indicatorName</code> (or
+                        common aliases).</span
+                    >
+                </div>
+
+                <div style="margin-bottom: 2rem">
+                    <h3 style="margin-bottom: 1rem; color: #1a237e">
+                        Official Documents & Strategies
+                    </h3>
+                    <p
+                        style="
+                            margin-bottom: 0.5rem;
+                            color: #333;
+                            font-size: 0.95rem;
+                        "
+                    >
+                        MoGCDSW strategic documents and legislation from the
+                        official shared Google&nbsp;Drive folder. Each link
+                        opens the PDF in Drive (use Download from the file menu
+                        if needed).
+                    </p>
+                    <p style="margin-bottom: 0.75rem">
+                        <a
+                            href="https://drive.google.com/drive/folders/1tuQX_pJlI65XQXMw85dor-357vqQgUBu?usp=sharing"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style="
+                                font-weight: 600;
+                                color: #1a237e;
+                                text-decoration: underline;
+                            "
+                        >
+                            📂 Open full folder on Google Drive
+                        </a>
+                    </p>
+                    <ul
+                        id="documentsList"
+                        style="margin-left: 1.25rem; margin-top: 0.5rem"
+                    >
+                        <!-- Populated from dashboardData.documents or DEFAULT_OFFICIAL_DOCUMENTS -->
+                    </ul>
+                    <span class="help-text"
+                        >Links point to the
+                        <a
+                            href="https://drive.google.com/drive/folders/1tuQX_pJlI65XQXMw85dor-357vqQgUBu?usp=sharing"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >MoGCDSW Strategic Documents and Legislations</a
+                        >
+                        folder. Override via <code>documents</code> in imported
+                        JSON if needed.</span
+                    >
+                </div>
+
+                <div style="margin-bottom: 2rem">
+                    <h3 style="margin-bottom: 1rem; color: #1a237e">
+                        Import Data
+                    </h3>
+                    <input
+                        type="file"
+                        id="importFile"
+                        accept=".json"
+                        style="margin-bottom: 1rem"
+                    />
+                    <button class="btn btn-success" onclick="importJSON()">
+                        📤 Import JSON File
+                    </button>
+                    <span class="help-text"
+                        >Upload a previously exported JSON file to restore
+                        data</span
+                    >
+                </div>
+
+                <!-- Current data preview removed as requested -->
+            </div>
+        </div>
+
+        <div class="notification" id="notification"></div>
+
+        <script>
+            // =========================
+            // Data sources (configure)
+            // =========================
+            // 1) Primary initial load (local JSON file in same folder as this HTML)
+            const DASHBOARD_JSON_URL = "./dashboard-data.json";
+
+            // Official documents (MoGCDSW shared folder – file IDs verified for this folder)
+            const DEFAULT_OFFICIAL_DOCUMENTS = [
+                {
+                    title: "APPROVED COMMUNITY DEVELOPMENT MONTH CONCEPT",
+                    href: "https://drive.google.com/file/d/1GLHPc5VEkZuGpplRwuHosUgbEZesJSu1/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "Approved National Community Development Policy 2024 – FINAL July 2024",
+                    href: "https://drive.google.com/file/d/1L6Ow7ggYRi5TH2h0eeraHQ9Z6Ff-7xul/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "ECD Policy (final)",
+                    href: "https://drive.google.com/file/d/1W64n52oUd2w2SO5rrFE2VWmv4IK7iGKJ/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "ECM Strategy 2024",
+                    href: "https://drive.google.com/file/d/1oF7Sm3h1nTdlTrNvV8jk7pPtirBIEzv0/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "National Action Plan on Elderly Issues (final draft)",
+                    href: "https://drive.google.com/file/d/1vWwyH_TTuLpUeynAq07jm_7XkgkgNJRn/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "National Gender Policy – final for print (Sept 2025)",
+                    href: "https://drive.google.com/file/d/1tzkcO0gHbE4y_F5eXTnhsAn6eZuK3ebr/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "MoGCDSW Strategic Plan 2024–2030 – version for printing (05-09-2025)",
+                    href: "https://drive.google.com/file/d/1Ce8ma_5OqqaZz2C-hxIPl8h68VqIG7ZV/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "Political Empowerment for Women (PEW) Strategy – 31 July 2024",
+                    href: "https://drive.google.com/file/d/14K2kyC3uFz-Ip6sFujqmw2qgEFDXI_vO/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "Malawi NAPWEE 2025–2030 (report, print)",
+                    href: "https://drive.google.com/file/d/1keJ1wEHYE-A924_i4_Lg6fsp6TdbOr4D/view?usp=sharing",
+                    description: "Large PDF (~50 MB).",
+                },
+                {
+                    title: "National Disability Policy (Cabinet approved 06.02.2025)",
+                    href: "https://drive.google.com/file/d/1JfFaVqBVGnKx2b85x0wJTvUZeRptLiDq/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "National Male Engagement Strategy (NMES)",
+                    href: "https://drive.google.com/file/d/1yNyGsl78x5Pmj6JKp00QCLF3qsNpiFf9/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "NCC Act 12 of 2019",
+                    href: "https://drive.google.com/file/d/1iB6sQVbUKahwC7VqD8f0t8R24e4ySxiJ/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "Older Persons Act, 2024",
+                    href: "https://drive.google.com/file/d/1NkMWLqgUl7_a68qZaih8Q9TNBiq0HxV3/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+                {
+                    title: "Persons with Disabilities Act, 2024",
+                    href: "https://drive.google.com/file/d/1yofrFzz-5QZrFBRoNPE8TXSHczkTlX48/view?usp=sharing",
+                    description: "PDF (shared folder).",
+                },
+            ];
+
+            // 2) Optional yearly updates from a published Google Sheet (CSV)
+            // Publish your sheet to the web as CSV, then paste the CSV URL here.
+            // Expected columns (header row required):
+            // deptId,indicatorName,baseline2024,y2025,y2026,y2027,y2028,y2029,target2030
+            // Example row:
+            // gender,Women experiencing physical violence,34%,32%,30%,...,10%
+            // Must use CSV export (not pubhtml) or sync will parse HTML and match no indicators.
+            const GOOGLE_SHEET_CSV_URL =
+                "https://docs.google.com/spreadsheets/d/e/2PACX-1vRp8h8Rp3LZVcf5UpFFjsH2cK9F6zq0Qv5MliK_AuMlh01GErVFlCdqe39xuqGmZKxYYqKBOQbjZznN/pub?gid=0&single=true&output=csv";
+
+            // 3) Optional milestones import from a published Google Sheet (CSV export)
+            // Expected wide format headers (minimum):
+            // deptId,2024,2025,2026,2027,2028,2029,2030
+            // Each year cell may contain multiple milestones separated by new lines within the same quoted CSV cell.
+            // NOTE: Leave empty to disable milestones sync.
+            const GOOGLE_SHEET_MILESTONES_CSV_URL =
+                "https://docs.google.com/spreadsheets/d/e/2PACX-1vSndOTcJoARr0fpDNDat65VOWfoLWet90MYetjtO6PBKTM-9vb0P9_tpexjmDerSVuarG1mAnK6EE6X/pub?gid=0&single=true&output=csv";
+
+            // =========================
+            // Default fallback (only if JSON fetch fails)
+            // =========================
+            let dashboardData = {
+                overview: {
+                    title: "Ministry of Gender, Community Development and Social Welfare",
+                    planPeriod: "2024-2030",
+                    vision: "A transformed nation with socially, economically, and politically empowered women, men, girls, and boys.",
+                    mission:
+                        "To accelerate inclusive socioeconomic development for the people of Malawi through the promotion of gender equality, child and social protection using community and welfare approaches.",
+                    currentYear: 2025,
+                    totalYears: 7,
+                },
+                departments: [
+                    {
+                        id: "gender",
+                        name: "Gender Affairs",
+                        color: "#E91E63",
+                        outcomes: [
+                            {
+                                name: "Reduced Gender Based Violence",
+                                progress: 15,
+                                target: 100,
+                            },
+                            {
+                                name: "Economically Empowered Women",
+                                progress: 22,
+                                target: 100,
+                            },
+                            {
+                                name: "Reduced Gender Inequalities",
+                                progress: 18,
+                                target: 100,
+                            },
+                        ],
+                        keyIndicators: [
+                            {
+                                name: "Women experiencing violence",
+                                baseline: "34%",
+                                current: "32%",
+                                target: "10%",
+                                baseline2024: "34%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "10%",
+                            },
+                            {
+                                name: "Women in Parliament",
+                                baseline: "23%",
+                                current: "23%",
+                                target: "40%",
+                                baseline2024: "23%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "40%",
+                            },
+                            {
+                                name: "Women in decision-making",
+                                baseline: "29%",
+                                current: "30%",
+                                target: "40%",
+                                baseline2024: "29%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "40%",
+                            },
+                        ],
+                        strategies: 15,
+                        activitiesCompleted: 8,
+                        totalActivities: 45,
+                    },
+                    {
+                        id: "community",
+                        name: "Community Development",
+                        color: "#2196F3",
+                        outcomes: [
+                            {
+                                name: "Increased Community Participation",
+                                progress: 25,
+                                target: 100,
+                            },
+                            {
+                                name: "Enhanced Access to Adult Literacy",
+                                progress: 20,
+                                target: 100,
+                            },
+                            {
+                                name: "Increased Access to ECD Services",
+                                progress: 28,
+                                target: 100,
+                            },
+                        ],
+                        keyIndicators: [
+                            {
+                                name: "Adult Literacy Rate",
+                                baseline: "65.75%",
+                                current: "67%",
+                                target: "80%",
+                                baseline2024: "65.75%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "80%",
+                            },
+                            {
+                                name: "Savings & Loan Groups",
+                                baseline: "59,500",
+                                current: "75,000",
+                                target: "500,000",
+                                baseline2024: "59,500",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "500,000",
+                            },
+                            {
+                                name: "Adult Literacy Centers",
+                                baseline: "500",
+                                current: "650",
+                                target: "5,000",
+                                baseline2024: "500",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "5,000",
+                            },
+                        ],
+                        strategies: 12,
+                        activitiesCompleted: 12,
+                        totalActivities: 48,
+                    },
+                    {
+                        id: "child",
+                        name: "Child Affairs",
+                        color: "#FF9800",
+                        outcomes: [
+                            {
+                                name: "Enhanced Child Rights Protection",
+                                progress: 30,
+                                target: 100,
+                            },
+                            {
+                                name: "Reduced Child Marriages",
+                                progress: 12,
+                                target: 100,
+                            },
+                            {
+                                name: "Increased Access to Quality ECD",
+                                progress: 35,
+                                target: 100,
+                            },
+                        ],
+                        keyIndicators: [
+                            {
+                                name: "Child Marriage Rate",
+                                baseline: "47%",
+                                current: "45%",
+                                target: "5%",
+                                baseline2024: "47%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "5%",
+                            },
+                            {
+                                name: "Children in ECD Centers",
+                                baseline: "48.7%",
+                                current: "50%",
+                                target: "100%",
+                                baseline2024: "48.7%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "100%",
+                            },
+                            {
+                                name: "Birth Registration",
+                                baseline: "20%",
+                                current: "25%",
+                                target: "95%",
+                                baseline2024: "20%",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "95%",
+                            },
+                        ],
+                        strategies: 10,
+                        activitiesCompleted: 6,
+                        totalActivities: 35,
+                    },
+                    {
+                        id: "social",
+                        name: "Social Welfare",
+                        color: "#9C27B0",
+                        outcomes: [
+                            {
+                                name: "Improved Access to Justice",
+                                progress: 20,
+                                target: 100,
+                            },
+                            {
+                                name: "Improved Family Functionality",
+                                progress: 18,
+                                target: 100,
+                            },
+                            {
+                                name: "Improved Well-being of Ultra-poor",
+                                progress: 40,
+                                target: 100,
+                            },
+                        ],
+                        keyIndicators: [
+                            {
+                                name: "SCTP Beneficiary Households",
+                                baseline: "293,000",
+                                current: "310,000",
+                                target: "373,649",
+                                baseline2024: "293,000",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "373,649",
+                            },
+                            {
+                                name: "E-payment Districts",
+                                baseline: "10",
+                                current: "12",
+                                target: "29",
+                                baseline2024: "10",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "29",
+                            },
+                            {
+                                name: "Children Reintegrated",
+                                baseline: "1,200",
+                                current: "1,500",
+                                target: "10,000",
+                                baseline2024: "1,200",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "10,000",
+                            },
+                        ],
+                        strategies: 14,
+                        activitiesCompleted: 10,
+                        totalActivities: 52,
+                    },
+                    {
+                        id: "disability",
+                        name: "Disability & Elderly Affairs",
+                        color: "#00BCD4",
+                        outcomes: [
+                            {
+                                name: "Improved Disability Mainstreaming",
+                                progress: 15,
+                                target: 100,
+                            },
+                            {
+                                name: "Improved Livelihoods of PWDs",
+                                progress: 10,
+                                target: 100,
+                            },
+                            {
+                                name: "Improved Welfare of Elderly",
+                                progress: 8,
+                                target: 100,
+                            },
+                        ],
+                        keyIndicators: [
+                            {
+                                name: "PWDs with Assistive Tech",
+                                baseline: "150",
+                                current: "200",
+                                target: "5,000",
+                                baseline2024: "150",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "5,000",
+                            },
+                            {
+                                name: "Elderly Social Pension Beneficiaries",
+                                baseline: "0",
+                                current: "0",
+                                target: "656,892",
+                                baseline2024: "0",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "656,892",
+                            },
+                            {
+                                name: "Disability Trust Fund Operations",
+                                baseline: "1",
+                                current: "1",
+                                target: "100%",
+                                baseline2024: "1",
+                                y2025: "",
+                                y2026: "",
+                                y2027: "",
+                                y2028: "",
+                                y2029: "",
+                                target2030: "100%",
+                            },
+                        ],
+                        strategies: 11,
+                        activitiesCompleted: 4,
+                        totalActivities: 38,
+                    },
+                    {
+                        id: "management",
+                        name: "Management (Planning, Research & Administration)",
+                        color: "#607D8B",
+                        outcomes: [
+                            {
+                                name: "Enhanced coordination of strategic planning, policy development and budgeting",
+                                progress: 15,
+                                target: 100,
+                            },
+                            {
+                                name: "Improved provision of data management, monitoring and evaluation services",
+                                progress: 20,
+                                target: 100,
+                            },
+                            {
+                                name: "Transparent and efficient administrative and human resource management",
+                                progress: 10,
+                                target: 100,
+                            },
+                        ],
+                        keyIndicators: [
+                            {
+                                name: "Joint Sector Strategic Plans reviewed",
+                                baseline: "0",
+                                current: "0",
+                                target: "2",
+                            },
+                            {
+                                name: "Ministry policies and strategic plans reviewed",
+                                baseline: "5",
+                                current: "5",
+                                target: "30",
+                            },
+                            {
+                                name: "SWGs and TWGs coordinated",
+                                baseline: "5",
+                                current: "5",
+                                target: "34",
+                            },
+                            {
+                                name: "Local authorities with DDPs aligned to ministerial policies",
+                                baseline: "0",
+                                current: "0",
+                                target: "35",
+                            },
+                            {
+                                name: "Quarterly and annual review meetings conducted",
+                                baseline: "3",
+                                current: "3",
+                                target: "30",
+                            },
+                            {
+                                name: "Resource mobilisation strategies developed and in place",
+                                baseline: "0",
+                                current: "0",
+                                target: "1",
+                            },
+                            {
+                                name: "Project proposals developed and included in national budget",
+                                baseline: "3",
+                                current: "3",
+                                target: "35",
+                            },
+                            {
+                                name: "Data management systems developed, maintained and supported",
+                                baseline: "4",
+                                current: "4",
+                                target: "12",
+                            },
+                            {
+                                name: "Councils with functional MIS",
+                                baseline: "14",
+                                current: "14",
+                                target: "35",
+                            },
+                            {
+                                name: "Programme monitoring/surveys conducted",
+                                baseline: "4",
+                                current: "4",
+                                target: "34",
+                            },
+                            {
+                                name: "Reports submitted to OPC",
+                                baseline: "6",
+                                current: "6",
+                                target: "78",
+                            },
+                            {
+                                name: "Statistical bulletins produced",
+                                baseline: "0",
+                                current: "0",
+                                target: "14",
+                            },
+                            {
+                                name: "Local authorities monitored on implementation of sectoral programmes in DDPs",
+                                baseline: "10",
+                                current: "10",
+                                target: "35",
+                            },
+                            {
+                                name: "Planning staff trained in monitoring and evaluation",
+                                baseline: "0",
+                                current: "0",
+                                target: "30",
+                            },
+                            {
+                                name: "Procurement plans developed",
+                                baseline: "1",
+                                current: "1",
+                                target: "7",
+                            },
+                            {
+                                name: "Procurement plans adhered to",
+                                baseline: "10",
+                                current: "10",
+                                target: "70",
+                            },
+                            {
+                                name: "Vacancies within the Ministry established and filled",
+                                baseline: "0",
+                                current: "0",
+                                target: "50",
+                            },
+                            {
+                                name: "Career guidance and counselling sessions provided",
+                                baseline: "0",
+                                current: "0",
+                                target: "20",
+                            },
+                            {
+                                name: "Personnel records updated",
+                                baseline: "0%",
+                                current: "0%",
+                                target: "100%",
+                            },
+                            {
+                                name: "Payrolls checked and managed",
+                                baseline: "0",
+                                current: "0",
+                                target: "12",
+                            },
+                            {
+                                name: "Disciplinary cases resolved/closed",
+                                baseline: "0",
+                                current: "0",
+                                target: "30",
+                            },
+                            {
+                                name: "Staff performance appraisals conducted",
+                                baseline: "1",
+                                current: "1",
+                                target: "7",
+                            },
+                            {
+                                name: "Staff recruited (disaggregated by gender and age)",
+                                baseline: "3",
+                                current: "3",
+                                target: "150",
+                            },
+                        ],
+                        strategies: 18,
+                        activitiesCompleted: 6,
+                        totalActivities: 60,
+                    },
+                ],
+                milestones: [
+                    {
+                        year: 2024,
+                        title: "Strategic Plan Launch",
+                        status: "completed",
+                    },
+                    {
+                        year: 2025,
+                        title: "Mid-Year Review Q2",
+                        status: "in-progress",
+                    },
+                    { year: 2025, title: "Annual Review", status: "upcoming" },
+                    {
+                        year: 2027,
+                        title: "Mid-Term Evaluation",
+                        status: "upcoming",
+                    },
+                    {
+                        year: 2030,
+                        title: "Final Evaluation",
+                        status: "upcoming",
+                    },
+                ],
+                // budget field kept only in exported JSON; no UI editing section
+                documents: DEFAULT_OFFICIAL_DOCUMENTS.map((d) => ({ ...d })),
+                lastUpdated: new Date().toISOString(),
+                updatedBy: "Dashboard Administrator",
+            };
+
+            let selectedDeptId = null;
+
+            // Initialize the admin panel
+            async function init() {
+                dashboardData = await loadDashboardData();
+
+                // Optional: automatically sync yearly indicator values from Google Sheet (if GOOGLE_SHEET_CSV_URL is set)
+                if (GOOGLE_SHEET_CSV_URL) {
+                    await syncFromGoogleSheet({ persist: true, silent: true });
+                }
+
+                renderDepartmentSelector();
+                if (GOOGLE_SHEET_MILESTONES_CSV_URL) {
+                    await syncMilestonesFromGoogleSheet({
+                        persist: true,
+                        silent: true,
+                    });
+                }
+                loadMilestonesViewOnly();
+                updateDataPreview();
+            }
+
+            async function loadDashboardData() {
+                // First, try to load the latest JSON file from disk/server
+                try {
+                    const res = await fetch(
+                        `${DASHBOARD_JSON_URL}?t=${Date.now()}`,
+                        { cache: "no-store" },
+                    );
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const json = await res.json();
+                    localStorage.setItem("dashboardData", JSON.stringify(json));
+                    return json;
+                } catch (e) {
+                    // If JSON fetch fails, fall back to any saved local copy
+                    const saved = localStorage.getItem("dashboardData");
+                    if (saved) {
+                        try {
+                            return JSON.parse(saved);
+                        } catch (_) {
+                            // ignore and fall through
+                        }
+                    }
+                    // Finally, fallback to the embedded default
+                    localStorage.setItem(
+                        "dashboardData",
+                        JSON.stringify(dashboardData),
+                    );
+                    return dashboardData;
+                }
+            }
+
+            function normalizeIndicatorKey(s) {
+                return (s ?? "")
+                    .toString()
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\s+/g, " ");
+            }
+
+            function findIndicatorMatch(dept, nameFromSheet) {
+                const raw = (nameFromSheet ?? "").toString().trim();
+                if (!raw || !Array.isArray(dept.keyIndicators)) return null;
+                let m = dept.keyIndicators.find(
+                    (i) => (i.name || "").trim() === raw,
+                );
+                if (m) return m;
+                const nk = normalizeIndicatorKey(raw);
+                return (
+                    dept.keyIndicators.find(
+                        (i) => normalizeIndicatorKey(i.name) === nk,
+                    ) || null
+                );
+            }
+
+            function sheetColumnIndex(headerRow, candidates) {
+                const lower = headerRow.map((h) =>
+                    (h || "").toString().trim().toLowerCase(),
+                );
+                for (let c = 0; c < candidates.length; c++) {
+                    const i = lower.indexOf(candidates[c].toLowerCase());
+                    if (i >= 0) return i;
+                }
+                return -1;
+            }
+
+            function fetchedTextLooksLikeCsv(text) {
+                const s = (text || "").slice(0, 600).trim();
+                if (!s) return false;
+                if (/^<\s*!DOCTYPE/i.test(s) || /^<\s*html/i.test(s))
+                    return false;
+                return s.includes(",");
+            }
+
+            async function syncFromGoogleSheet({
+                persist = true,
+                silent = false,
+            } = {}) {
+                if (!GOOGLE_SHEET_CSV_URL) {
+                    if (!silent)
+                        alert("Google Sheet CSV URL is not configured yet.");
+                    return;
+                }
+
+                let csvText = "";
+                try {
+                    const res = await fetch(
+                        `${GOOGLE_SHEET_CSV_URL}${GOOGLE_SHEET_CSV_URL.includes("?") ? "&" : "?"}t=${Date.now()}`,
+                        { cache: "no-store" },
+                    );
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    csvText = await res.text();
+                } catch (e) {
+                    if (!silent)
+                        alert("Failed to sync from Google Sheet: " + e.message);
+                    return;
+                }
+
+                if (!fetchedTextLooksLikeCsv(csvText)) {
+                    const msg =
+                        "The sheet URL did not return CSV. Use a published link with output=csv (not pubhtml).";
+                    if (!silent) alert(msg);
+                    else showNotification("⚠️ " + msg, "warn");
+                    return;
+                }
+
+                const rows = parseCSV(csvText);
+                if (!rows.length) {
+                    if (!silent) alert("Google Sheet CSV has no data rows.");
+                    return;
+                }
+
+                const header = rows[0].map((h) => (h || "").trim());
+                const idx = (name) =>
+                    header.findIndex(
+                        (h) => h.toLowerCase() === name.toLowerCase(),
+                    );
+
+                const colDeptId = sheetColumnIndex(header, [
+                    "deptId",
+                    "department id",
+                    "department",
+                    "dept",
+                ]);
+                const colIndicatorName = sheetColumnIndex(header, [
+                    "indicatorName",
+                    "indicator name",
+                    "key indicator",
+                    "indicator",
+                    "kpi",
+                ]);
+                const colBaseline2024 = idx("baseline2024");
+                const colY2025 = idx("y2025");
+                const colY2026 = idx("y2026");
+                const colY2027 = idx("y2027");
+                const colY2028 = idx("y2028");
+                const colY2029 = idx("y2029");
+                const colTarget2030 = idx("target2030");
+
+                if (colDeptId < 0 || colIndicatorName < 0) {
+                    const msg =
+                        "Sheet must include a department column (e.g. deptId) and an indicator column (e.g. indicatorName). Found: " +
+                        header.join(", ");
+                    if (!silent) alert(msg);
+                    else showNotification("⚠️ " + msg, "warn");
+                    return;
+                }
+
+                let updated = 0;
+                let skippedNoDept = 0;
+                let skippedNoIndicator = 0;
+
+                for (let r = 1; r < rows.length; r++) {
+                    const row = rows[r];
+                    if (!row || !row.length) continue;
+
+                    const deptId = (row[colDeptId] || "").trim();
+                    const indicatorName = (row[colIndicatorName] || "").trim();
+                    if (!deptId || !indicatorName) continue;
+
+                    const dept = dashboardData.departments.find(
+                        (d) => d.id === deptId,
+                    );
+                    if (!dept || !Array.isArray(dept.keyIndicators)) {
+                        skippedNoDept++;
+                        continue;
+                    }
+
+                    const indicator = findIndicatorMatch(dept, indicatorName);
+                    if (!indicator) {
+                        skippedNoIndicator++;
+                        continue;
+                    }
+
+                    const setIfPresent = (field, value) => {
+                        const v = (value ?? "").toString().trim();
+                        if (v !== "") indicator[field] = v;
+                    };
+
+                    if (colBaseline2024 >= 0)
+                        setIfPresent("baseline2024", row[colBaseline2024]);
+                    if (colY2025 >= 0) setIfPresent("y2025", row[colY2025]);
+                    if (colY2026 >= 0) setIfPresent("y2026", row[colY2026]);
+                    if (colY2027 >= 0) setIfPresent("y2027", row[colY2027]);
+                    if (colY2028 >= 0) setIfPresent("y2028", row[colY2028]);
+                    if (colY2029 >= 0) setIfPresent("y2029", row[colY2029]);
+                    if (colTarget2030 >= 0)
+                        setIfPresent("target2030", row[colTarget2030]);
+
+                    if (
+                        indicator.baseline2024 != null &&
+                        indicator.baseline2024 !== ""
+                    ) {
+                        indicator.baseline = indicator.baseline2024;
+                    }
+                    if (
+                        indicator.target2030 != null &&
+                        indicator.target2030 !== ""
+                    ) {
+                        indicator.target = indicator.target2030;
+                    }
+
+                    const latestYearValue =
+                        indicator.y2029 ||
+                        indicator.y2028 ||
+                        indicator.y2027 ||
+                        indicator.y2026 ||
+                        indicator.y2025 ||
+                        indicator.baseline2024 ||
+                        indicator.baseline ||
+                        "";
+                    indicator.current = latestYearValue;
+                    updated++;
+                }
+
+                dashboardData.lastUpdated = new Date().toISOString();
+                if (persist)
+                    localStorage.setItem(
+                        "dashboardData",
+                        JSON.stringify(dashboardData),
+                    );
+
+                if (selectedDeptId) selectDepartment(selectedDeptId);
+                renderDepartmentSelector();
+                loadMilestonesViewOnly();
+                updateDataPreview();
+
+                const detail = [];
+                if (skippedNoIndicator)
+                    detail.push(
+                        `${skippedNoIndicator} row(s) had no matching indicator name in JSON`,
+                    );
+                if (skippedNoDept)
+                    detail.push(`${skippedNoDept} row(s) had unknown dept id`);
+                const tail = detail.length ? " " + detail.join("; ") + "." : "";
+
+                if (!silent) {
+                    showNotification(
+                        `🔄 Google Sheet: applied ${updated} indicator update(s).${tail}`,
+                    );
+                } else if (!updated && (skippedNoIndicator || skippedNoDept)) {
+                    showNotification(
+                        `⚠️ Sheet sync: 0 updates.${tail}`,
+                        "warn",
+                    );
+                }
+            }
+
+            async function syncMilestonesFromGoogleSheet({
+                persist = true,
+                silent = false,
+            } = {}) {
+                if (!GOOGLE_SHEET_MILESTONES_CSV_URL) {
+                    if (!silent)
+                        alert(
+                            "Milestones Google Sheet CSV URL is not configured yet.",
+                        );
+                    return;
+                }
+
+                ensureMilestonesByDeptInitialized();
+
+                let csvText = "";
+                try {
+                    const res = await fetch(
+                        `${GOOGLE_SHEET_MILESTONES_CSV_URL}${GOOGLE_SHEET_MILESTONES_CSV_URL.includes("?") ? "&" : "?"}t=${Date.now()}`,
+                        { cache: "no-store" },
+                    );
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    csvText = await res.text();
+                } catch (e) {
+                    if (!silent)
+                        alert(
+                            "Failed to sync milestones from Google Sheet: " +
+                                e.message,
+                        );
+                    return;
+                }
+
+                if (!fetchedTextLooksLikeCsv(csvText)) {
+                    const msg =
+                        "The milestones sheet URL did not return CSV. Use a published link with output=csv.";
+                    if (!silent) alert(msg);
+                    else showNotification("⚠️ " + msg, "warn");
+                    return;
+                }
+
+                const rows = parseCSV(csvText);
+                if (!rows.length) {
+                    if (!silent)
+                        alert("Milestones Google Sheet CSV has no data rows.");
+                    return;
+                }
+
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const header = rows[0].map((h) => (h || "").toString().trim());
+                const colDeptId = header.findIndex((h) =>
+                    ["deptId", "department", "department id", "dept"].includes(
+                        (h || "").toString().trim(),
+                    ),
+                );
+                if (colDeptId < 0) {
+                    if (!silent)
+                        alert(
+                            "Milestones sheet must include a `deptId` column in the header row.",
+                        );
+                    return;
+                }
+
+                const yearColIndex = {};
+                years.forEach((year) => {
+                    const idx = header.findIndex(
+                        (h) => (h || "").toString().trim() === String(year),
+                    );
+                    yearColIndex[year] = idx;
+                });
+
+                const splitMilestoneLines = (value) => {
+                    return (value || "")
+                        .toString()
+                        .split(/\r?\n/)
+                        .map((l) => (l ?? "").toString().trim())
+                        .filter((l) => l.length > 0);
+                };
+
+                let updated = 0;
+                let skippedUnknownDept = 0;
+
+                for (let r = 1; r < rows.length; r++) {
+                    const row = rows[r];
+                    if (!row || !row.length) continue;
+
+                    const deptId = (row[colDeptId] || "").toString().trim();
+                    if (!deptId) continue;
+
+                    const dept = dashboardData.departments.find(
+                        (d) => d.id === deptId,
+                    );
+                    if (!dept) {
+                        skippedUnknownDept++;
+                        continue;
+                    }
+
+                    years.forEach((year) => {
+                        const col = yearColIndex[year];
+                        const cell = col >= 0 ? row[col] || "" : "";
+                        const text = (cell ?? "").toString().trim();
+
+                        dashboardData.milestonesByDept[deptId][year] = text;
+                        // No status column in this sheet mode: default everything to upcoming per line.
+                        const lines = splitMilestoneLines(text);
+                        dashboardData.milestonesByDept[deptId][
+                            `${year}_status`
+                        ] = lines.map(() => "upcoming");
+                    });
+
+                    updated++;
+                }
+
+                dashboardData.lastUpdated = new Date().toISOString();
+                if (persist)
+                    localStorage.setItem(
+                        "dashboardData",
+                        JSON.stringify(dashboardData),
+                    );
+
+                loadMilestonesViewOnly();
+                updateDataPreview();
+
+                const detail = [];
+                if (skippedUnknownDept)
+                    detail.push(
+                        `${skippedUnknownDept} unknown deptId(s) skipped`,
+                    );
+                const tail = detail.length
+                    ? " (" + detail.join("; ") + ")"
+                    : "";
+
+                if (!silent) {
+                    showNotification(
+                        `✅ Milestones synced: ${updated} department row(s) updated.${tail}`,
+                    );
+                } else if (!updated && skippedUnknownDept) {
+                    showNotification(
+                        `⚠️ Milestones sync: 0 updates.${tail}`,
+                        "warn",
+                    );
+                }
+            }
+
+            // Minimal CSV parser (supports quoted fields)
+            function parseCSV(text) {
+                const rows = [];
+                let row = [];
+                let cur = "";
+                let inQuotes = false;
+
+                for (let i = 0; i < text.length; i++) {
+                    const ch = text[i];
+                    const next = text[i + 1];
+
+                    if (inQuotes) {
+                        if (ch === '"' && next === '"') {
+                            cur += '"';
+                            i++;
+                        } else if (ch === '"') {
+                            inQuotes = false;
+                        } else {
+                            cur += ch;
+                        }
+                        continue;
+                    }
+
+                    if (ch === '"') {
+                        inQuotes = true;
+                    } else if (ch === ",") {
+                        row.push(cur);
+                        cur = "";
+                    } else if (ch === "\n") {
+                        row.push(cur);
+                        rows.push(row);
+                        row = [];
+                        cur = "";
+                    } else if (ch === "\r") {
+                        // ignore
+                    } else {
+                        cur += ch;
+                    }
+                }
+
+                // last field
+                if (cur.length || row.length) {
+                    row.push(cur);
+                    rows.push(row);
+                }
+                return rows.filter((r) =>
+                    r.some((cell) => (cell || "").toString().trim() !== ""),
+                );
+            }
+
+            function showTab(tabName, clickedTab) {
+                // Hide all panels
+                document.querySelectorAll(".panel").forEach((panel) => {
+                    panel.classList.remove("active");
+                });
+                // Show selected panel
+                document.getElementById(tabName).classList.add("active");
+
+                // Update tab buttons
+                document.querySelectorAll(".tab").forEach((tab) => {
+                    tab.classList.remove("active");
+                });
+                if (clickedTab) {
+                    clickedTab.classList.add("active");
+                }
+            }
+
+            function renderDepartmentSelector() {
+                const container = document.getElementById("deptSelector");
+                container.innerHTML = dashboardData.departments
+                    .map(
+                        (dept) => `
+                <div class="dept-card" onclick="selectDepartment('${dept.id}')" id="card-${dept.id}">
+                    <h3>${dept.name}</h3>
+                </div>
+            `,
+                    )
+                    .join("");
+            }
+
+            function selectDepartment(deptId) {
+                selectedDeptId = deptId;
+                const dept = dashboardData.departments.find(
+                    (d) => d.id === deptId,
+                );
+
+                // Update active card
+                document
+                    .querySelectorAll(".dept-card")
+                    .forEach((card) => card.classList.remove("active"));
+                document
+                    .getElementById(`card-${deptId}`)
+                    .classList.add("active");
+
+                // Show form
+                document.getElementById("departmentForm").style.display =
+                    "block";
+                document.getElementById("selectedDeptName").textContent =
+                    dept.name;
+
+                // Render outcomes
+                const outcomesContainer =
+                    document.getElementById("outcomesContainer");
+                outcomesContainer.innerHTML = dept.outcomes
+                    .map(
+                        (outcome, idx) => `
+                <div class="outcome-group">
+                    <label>${outcome.name}</label>
+                    <input type="number" id="outcome-${idx}" value="${outcome.progress}" min="0" max="100" step="1">
+                    <span class="help-text">Progress percentage (0-100)</span>
+                </div>
+            `,
+                    )
+                    .join("");
+
+                // Render indicators as yearly outcome monitoring table
+                const indicatorsContainer = document.getElementById(
+                    "indicatorsContainer",
+                );
+                const indicatorRows = dept.keyIndicators
+                    .map(
+                        (indicator, idx) => `
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem;">
+                        ${indicator.name}
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="baseline-${idx}-2024"
+                            value="${indicator.baseline2024 || indicator.baseline || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="year-${idx}-2025"
+                            value="${indicator.y2025 || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="year-${idx}-2026"
+                            value="${indicator.y2026 || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="year-${idx}-2027"
+                            value="${indicator.y2027 || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="year-${idx}-2028"
+                            value="${indicator.y2028 || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="year-${idx}-2029"
+                            value="${indicator.y2029 || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">
+                        <input
+                            type="text"
+                            id="target-${idx}-2030"
+                            value="${indicator.target2030 || indicator.target || ""}"
+                            style="width: 100%; text-align: center; border: none; background: transparent;"
+                        >
+                    </td>
+                </tr>
+            `,
+                    )
+                    .join("");
+
+                indicatorsContainer.innerHTML = `
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="background: #f5f5ff;">
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: left;">Key Indicator</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">Baseline (2024)</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">2025</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">2026</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">2027</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">2028</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">2029</th>
+                                <th style="border: 1px solid #ddd; padding: 0.5rem; text-align: center;">Against Target (2030)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${indicatorRows}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            }
+
+            function saveDepartmentData() {
+                if (!selectedDeptId) return;
+
+                const dept = dashboardData.departments.find(
+                    (d) => d.id === selectedDeptId,
+                );
+
+                // Update outcomes
+                dept.outcomes.forEach((outcome, idx) => {
+                    outcome.progress = parseInt(
+                        document.getElementById(`outcome-${idx}`).value,
+                    );
+                });
+
+                // Update indicators with yearly data
+                dept.keyIndicators.forEach((indicator, idx) => {
+                    const baseline2024 = document.getElementById(
+                        `baseline-${idx}-2024`,
+                    ).value;
+                    const y2025 = document.getElementById(
+                        `year-${idx}-2025`,
+                    ).value;
+                    const y2026 = document.getElementById(
+                        `year-${idx}-2026`,
+                    ).value;
+                    const y2027 = document.getElementById(
+                        `year-${idx}-2027`,
+                    ).value;
+                    const y2028 = document.getElementById(
+                        `year-${idx}-2028`,
+                    ).value;
+                    const y2029 = document.getElementById(
+                        `year-${idx}-2029`,
+                    ).value;
+                    const target2030 = document.getElementById(
+                        `target-${idx}-2030`,
+                    ).value;
+
+                    indicator.baseline2024 = baseline2024;
+                    indicator.y2025 = y2025;
+                    indicator.y2026 = y2026;
+                    indicator.y2027 = y2027;
+                    indicator.y2028 = y2028;
+                    indicator.y2029 = y2029;
+                    indicator.target2030 = target2030;
+
+                    // Keep legacy fields in sync for compatibility
+                    indicator.baseline = baseline2024;
+                    indicator.target = target2030;
+
+                    // Set "current" as the latest non-empty year value, falling back to baseline
+                    const latestYearValue =
+                        y2029 ||
+                        y2028 ||
+                        y2027 ||
+                        y2026 ||
+                        y2025 ||
+                        baseline2024 ||
+                        "";
+                    indicator.current = latestYearValue;
+                });
+
+                // Update timestamp
+                dashboardData.lastUpdated = new Date().toISOString();
+
+                // Save to localStorage
+                localStorage.setItem(
+                    "dashboardData",
+                    JSON.stringify(dashboardData),
+                );
+
+                showNotification("✅ Department data saved successfully!");
+                updateDataPreview();
+            }
+
+            function loadMilestonesForm() {
+                ensureMilestonesByDeptInitialized();
+                const container = document.getElementById(
+                    "milestonesContainer",
+                );
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const headerCells = years
+                    .map((year) => `<th scope="col">${year}</th>`)
+                    .join("");
+
+                const searchInput = document.getElementById(
+                    "milestonesSearchInput",
+                );
+                const searchTerm = (
+                    searchInput && searchInput.value ? searchInput.value : ""
+                )
+                    .toString()
+                    .trim()
+                    .toLowerCase();
+
+                const yearFilterSelect = document.getElementById(
+                    "milestonesYearFilter",
+                );
+                const yearFilterRaw = (
+                    yearFilterSelect && yearFilterSelect.value
+                        ? yearFilterSelect.value
+                        : "all"
+                ).toString();
+                const selectedYear =
+                    yearFilterRaw === "all"
+                        ? null
+                        : parseInt(yearFilterRaw, 10);
+
+                const yearsForMatch = selectedYear ? [selectedYear] : years;
+                const yearFilterLabel = selectedYear
+                    ? selectedYear
+                    : "all years";
+
+                const STATUS_LABELS = {
+                    completed: "Completed",
+                    "in-progress": "In Progress",
+                    delayed: "Delayed",
+                    upcoming: "Upcoming",
+                };
+
+                const STATUS_OPTIONS = [
+                    "upcoming",
+                    "in-progress",
+                    "completed",
+                    "delayed",
+                ];
+
+                const statusRank = (status) => {
+                    switch (status) {
+                        case "completed":
+                            return 0;
+                        case "upcoming":
+                            return 1;
+                        case "in-progress":
+                            return 2;
+                        case "delayed":
+                            return 3;
+                        default:
+                            return 1;
+                    }
+                };
+
+                const worstStatus = (statuses) => {
+                    if (!Array.isArray(statuses) || statuses.length === 0)
+                        return "upcoming";
+                    let worst = "upcoming";
+                    let worstRank = -1;
+                    statuses.forEach((s) => {
+                        const r = statusRank(s);
+                        if (r > worstRank) {
+                            worstRank = r;
+                            worst = s;
+                        }
+                    });
+                    return worst;
+                };
+
+                const splitMilestoneLines = (value) => {
+                    return (value || "")
+                        .toString()
+                        .split(/\r?\n/)
+                        .map((l) => (l ?? "").toString().trim())
+                        .filter((l) => l.length > 0);
+                };
+
+                const rowHasAnyMilestonesInYears = (rowId, yearsToCheck) => {
+                    return yearsToCheck.some((y) => {
+                        const raw =
+                            (dashboardData.milestonesByDept[rowId] &&
+                                dashboardData.milestonesByDept[rowId][y]) ||
+                            "";
+                        return splitMilestoneLines(raw).length > 0;
+                    });
+                };
+
+                const rowTextMatchesSearch = (rowId, yearsToCheck, term) => {
+                    if (!term) return true;
+                    return yearsToCheck.some((y) => {
+                        const raw =
+                            (dashboardData.milestonesByDept[rowId] &&
+                                dashboardData.milestonesByDept[rowId][y]) ||
+                            "";
+                        return raw.toString().toLowerCase().includes(term);
+                    });
+                };
+
+                const renderMilestoneCells = (rowId) =>
+                    years
+                        .map((year) => {
+                            const yearKey = `${year}_status`;
+                            const rawValue =
+                                (dashboardData.milestonesByDept[rowId] &&
+                                    dashboardData.milestonesByDept[rowId][
+                                        year
+                                    ]) ||
+                                "";
+                            const rawStatuses =
+                                (dashboardData.milestonesByDept[rowId] &&
+                                    dashboardData.milestonesByDept[rowId][
+                                        yearKey
+                                    ]) ||
+                                [];
+                            const statusesArr = Array.isArray(rawStatuses)
+                                ? rawStatuses
+                                : [];
+
+                            const lines = splitMilestoneLines(rawValue);
+                            const uiLines = lines.length ? lines : [""];
+                            const uiStatuses = uiLines.map(
+                                (_, idx) => statusesArr[idx] || "upcoming",
+                            );
+                            const worst = lines.length
+                                ? worstStatus(uiStatuses.slice(0, lines.length))
+                                : "upcoming";
+
+                            const escRow = escAttr(rowId);
+
+                            const linesHtml = uiLines
+                                .map((text, idx) => {
+                                    const status =
+                                        uiStatuses[idx] || "upcoming";
+                                    const statusLabel =
+                                        STATUS_LABELS[status] ||
+                                        STATUS_LABELS.upcoming;
+                                    const selected = (opt) =>
+                                        opt === status ? "selected" : "";
+                                    const statusSelectOptions =
+                                        STATUS_OPTIONS.map((opt) => {
+                                            const label =
+                                                STATUS_LABELS[opt] || opt;
+                                            return `<option value="${opt}" ${selected(opt)}>${label}</option>`;
+                                        }).join("");
+
+                                    return `
+                                <div class="milestone-line-editor status-${status}">
+                                    <textarea
+                                        class="milestone-line-text"
+                                        rows="3"
+                                        placeholder="One milestone per line"
+                                    >${escapeHtml(text)}</textarea>
+                                    <div class="milestone-line-status-row">
+                                        <span class="milestone-status-badge" aria-hidden="true">${escapeHtml(statusLabel)}</span>
+                                        <select
+                                            class="milestone-line-select milestone-line-status"
+                                            aria-label="Milestone status"
+                                            onchange="onMilestoneLineStatusChange('${escRow}', '${year}', this)"
+                                        >${statusSelectOptions}</select>
+                                        <button
+                                            type="button"
+                                            class="btn-milestone-remove-line"
+                                            onclick="removeMilestoneLine('${escRow}', '${year}', this)"
+                                            aria-label="Remove milestone line"
+                                        >Remove</button>
+                                    </div>
+                                </div>
+                            `;
+                                })
+                                .join("");
+
+                            return `
+                            <td
+                                id="milestone-td-${escRow}-${year}"
+                                class="milestones-year-td status-${worst}"
+                            >
+                                <div class="milestone-year-lines" id="milestone-lines-${escRow}-${year}">
+                                    ${linesHtml}
+                                </div>
+                                <button
+                                    type="button"
+                                    class="btn-milestone-add-line"
+                                    onclick="addMilestoneLine('${escRow}', '${year}')"
+                                    aria-label="Add milestone line for year ${year}"
+                                >➕ Add line</button>
+                            </td>
+                        `;
+                        })
+                        .join("");
+
+                const escAttr = (s) =>
+                    (s ?? "")
+                        .toString()
+                        .replace(/\\/g, "\\\\")
+                        .replace(/'/g, "\\'");
+
+                let html = '<div class="milestones-shell">';
+
+                dashboardData.departments.forEach((dept) => {
+                    const rolesAll =
+                        (dashboardData.rolesByDept &&
+                            dashboardData.rolesByDept[dept.id]) ||
+                        [];
+
+                    let rolesToRender = rolesAll;
+                    let includeDeptRow = true;
+                    let includeDeptDetails = true;
+
+                    if (searchTerm) {
+                        const deptNameMatch = (dept.name || "")
+                            .toString()
+                            .toLowerCase()
+                            .includes(searchTerm);
+                        const deptTextMatch = rowTextMatchesSearch(
+                            dept.id,
+                            yearsForMatch,
+                            searchTerm,
+                        );
+                        includeDeptRow = deptNameMatch || deptTextMatch;
+
+                        rolesToRender = rolesAll.filter((role) => {
+                            const roleNameMatch = (role.name || "")
+                                .toString()
+                                .toLowerCase()
+                                .includes(searchTerm);
+                            const roleTextMatch = rowTextMatchesSearch(
+                                role.id,
+                                yearsForMatch,
+                                searchTerm,
+                            );
+                            return roleNameMatch || roleTextMatch;
+                        });
+
+                        includeDeptDetails =
+                            includeDeptRow || rolesToRender.length > 0;
+                    } else if (selectedYear) {
+                        includeDeptRow = rowHasAnyMilestonesInYears(dept.id, [
+                            selectedYear,
+                        ]);
+                        rolesToRender = rolesAll.filter((role) =>
+                            rowHasAnyMilestonesInYears(role.id, [selectedYear]),
+                        );
+                        includeDeptDetails =
+                            includeDeptRow || rolesToRender.length > 0;
+                    }
+
+                    if (!includeDeptDetails) return;
+
+                    const displayRowCount =
+                        (includeDeptRow ? 1 : 0) + rolesToRender.length;
+
+                    // Progress uses the full department row set, but only checks milestones within the selected year (or all years).
+                    const progressYears = selectedYear ? [selectedYear] : years;
+                    const totalRows = 1 + rolesAll.length;
+                    const documentedRows = [
+                        dept.id,
+                        ...rolesAll.map((r) => r.id),
+                    ].filter((rowId) =>
+                        rowHasAnyMilestonesInYears(rowId, progressYears),
+                    ).length;
+                    const progressPct = totalRows
+                        ? Math.round((documentedRows / totalRows) * 100)
+                        : 0;
+
+                    html += '<details class="milestones-dept-details" open>';
+                    html += `<summary class="milestones-dept-summary" style="--accent-color:${escapeHtml(dept.color || "#1a365d")};" aria-label="Department milestones: ${escapeHtml(dept.name)}"><span>${escapeHtml(dept.name)}</span><span class="milestones-dept-meta">${displayRowCount} row${displayRowCount === 1 ? "" : "s"}</span><div class="milestones-progress" aria-label="${progressPct}% of milestones documented for ${escapeHtml(yearFilterLabel)}"><div class="milestones-progress-bar"><div class="milestones-progress-fill" style="width:${progressPct}%;"></div></div><div class="milestones-progress-text">${progressPct}% documented for ${escapeHtml(yearFilterLabel)}</div></div></summary>`;
+                    html += '<div class="milestones-table-wrap">';
+                    html += `<table class="milestones-table" aria-label="Milestones: ${escapeHtml(dept.name)}"><thead><tr>`;
+                    html +=
+                        '<th scope="col" class="col-label">Department / role</th>';
+                    html += headerCells;
+                    html += "</tr></thead><tbody>";
+
+                    if (includeDeptRow) {
+                        html += `<tr class="row-dept"><td>${escapeHtml(dept.name)}<span class="milestones-dept-meta" style="display:block;margin-top:0.35rem;">Department total</span></td>${renderMilestoneCells(dept.id)}</tr>`;
+                    }
+
+                    rolesToRender.forEach((role) => {
+                        html += `<tr class="row-role"><td><div style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;flex-wrap:wrap;"><span><span class="milestones-dept-meta">Role · </span><strong>${escapeHtml(role.name)}</strong></span><button type="button" class="btn-milestone-remove" onclick="removeRoleRow('${escAttr(dept.id)}', '${escAttr(role.id)}')">Remove</button></div></td>${renderMilestoneCells(role.id)}</tr>`;
+                    });
+
+                    html += "</tbody></table></div></details>";
+                });
+
+                let extras = dashboardData.milestoneExtraRows || [];
+                if (searchTerm) {
+                    extras = extras.filter((row) => {
+                        const nameMatch = (row.name || "")
+                            .toString()
+                            .toLowerCase()
+                            .includes(searchTerm);
+                        const textMatch = rowTextMatchesSearch(
+                            row.id,
+                            yearsForMatch,
+                            searchTerm,
+                        );
+                        return nameMatch || textMatch;
+                    });
+                } else if (selectedYear) {
+                    extras = extras.filter((row) =>
+                        rowHasAnyMilestonesInYears(row.id, [selectedYear]),
+                    );
+                }
+
+                html +=
+                    '<details class="milestones-dept-details milestones-crosscut" open>';
+                html += `<summary class="milestones-dept-summary milestones-crosscut-summary" style="--accent-color:#1a365d;" aria-label="Additional / cross-cutting milestone rows"><span>Additional / cross-cutting rows</span><span class="milestones-dept-meta">${extras.length} custom row${extras.length === 1 ? "" : "s"}</span></summary>`;
+                html += '<div class="milestones-table-wrap">';
+                html +=
+                    '<table class="milestones-table" aria-label="Additional milestone rows"><thead><tr>';
+                html += '<th scope="col" class="col-label">Programme row</th>';
+                html += headerCells;
+                html += "</tr></thead><tbody>";
+
+                if (!extras.length) {
+                    html += `<tr><td colspan="${years.length + 1}" style="color:#3d4f64;font-style:italic;padding:1.35rem;line-height:1.5;">No custom rows match your filter. Use <strong>Add Custom Row</strong> below to add programme-wide milestones.</td></tr>`;
+                } else {
+                    extras.forEach((row) => {
+                        html += `<tr class="row-dept"><td>${escapeHtml(row.name)}</td>${renderMilestoneCells(row.id)}</tr>`;
+                    });
+                }
+
+                html += "</tbody></table></div></details></div>";
+                html +=
+                    '<p class="help-text" style="margin-top:1rem;font-style:normal;">Values are stored in the browser until you save or export JSON. CSV export uses the same order: each department (with its roles), then cross-cutting rows.</p>';
+
+                container.innerHTML = html;
+
+                renderMilestonesTimeline();
+            }
+
+            function loadMilestonesViewOnly() {
+                ensureMilestonesByDeptInitialized();
+                const container = document.getElementById(
+                    "milestonesContainer",
+                );
+                if (!container) return;
+
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const splitMilestoneLines = (value) => {
+                    return (value || "")
+                        .toString()
+                        .split(/\r?\n/)
+                        .map((l) => (l ?? "").toString().trim())
+                        .filter((l) => l.length > 0);
+                };
+
+                const deps = Array.isArray(dashboardData.departments)
+                    ? dashboardData.departments
+                    : [];
+                let html =
+                    '<div class="milestones-table-wrap"><table class="milestones-table" aria-label="Milestones by department and year"><thead><tr>';
+                html +=
+                    '<th scope="col" class="col-label" style="min-width:16rem;">Department</th>';
+                html += years
+                    .map((year) => `<th scope="col">${year}</th>`)
+                    .join("");
+                html += "</tr></thead><tbody>";
+
+                deps.forEach((dept) => {
+                    const yearLines = years.map((year) =>
+                        splitMilestoneLines(
+                            dashboardData.milestonesByDept?.[dept.id]?.[year] ||
+                                "",
+                        ),
+                    );
+                    const maxLines = Math.max(
+                        1,
+                        ...yearLines.map((lines) => lines.length),
+                    );
+
+                    for (let i = 0; i < maxLines; i++) {
+                        html += "<tr>";
+                        if (i === 0) {
+                            html += `<td rowspan="${maxLines}" class="row-dept-cell" style="font-weight:700; color:#0d2845; vertical-align:top;">${escapeHtml(dept.name)}</td>`;
+                        }
+
+                        years.forEach((_, idx) => {
+                            const lines = yearLines[idx];
+                            const text = lines[i] || "";
+                            html += `<td>${text ? `<div class="milestones-simple-cell">${escapeHtml(text)}</div>` : ""}</td>`;
+                        });
+
+                        html += "</tr>";
+                    }
+                });
+
+                html += "</tbody></table></div>";
+                container.innerHTML = html;
+            }
+
+            function renderMilestonesTimeline() {
+                const root = document.getElementById("milestonesTimeline");
+                if (!root) return;
+
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const milestones = Array.isArray(dashboardData.milestones)
+                    ? dashboardData.milestones
+                    : [];
+                const byYear = {};
+                years.forEach((y) => {
+                    byYear[y] = [];
+                });
+                milestones.forEach((m) => {
+                    if (!m || m.year == null) return;
+                    const year = Number(m.year);
+                    if (!Number.isFinite(year)) return;
+                    if (!byYear[year]) byYear[year] = [];
+                    byYear[year].push(m);
+                });
+
+                const html = `
+                <div class="milestones-timeline-grid" role="list" aria-label="Cross-cutting milestones timeline">
+                    ${years
+                        .map((year) => {
+                            const items = byYear[year] || [];
+                            const shown = items.slice(0, 3);
+                            const extra = items.length - shown.length;
+                            return `
+                            <div class="milestones-timeline-cell" role="listitem" aria-label="Timeline for ${escapeHtml(year)}">
+                                <div class="milestones-timeline-year">${year}</div>
+                                ${shown
+                                    .map((item) => {
+                                        const status =
+                                            item.status || "upcoming";
+                                        const title = item.title || "";
+                                        return `
+                                        <div class="timeline-item-bar timeline-status-${status}" title="${escapeHtml(title)}"></div>
+                                        <div class="timeline-item-title" title="${escapeHtml(title)}">${escapeHtml(title)}</div>
+                                    `;
+                                    })
+                                    .join("")}
+                                ${extra > 0 ? `<div class="timeline-item-title" style="opacity:0.75;">+${extra} more</div>` : ""}
+                            </div>
+                        `;
+                        })
+                        .join("")}
+                </div>
+            `;
+
+                root.innerHTML = html;
+            }
+
+            function escAttr(s) {
+                return (s ?? "")
+                    .toString()
+                    .replace(/\\/g, "\\\\")
+                    .replace(/'/g, "\\'");
+            }
+
+            function statusRank(status) {
+                switch (status) {
+                    case "completed":
+                        return 0;
+                    case "upcoming":
+                        return 1;
+                    case "in-progress":
+                        return 2;
+                    case "delayed":
+                        return 3;
+                    default:
+                        return 1;
+                }
+            }
+
+            function worstStatus(statuses) {
+                if (!Array.isArray(statuses) || statuses.length === 0)
+                    return "upcoming";
+                let worst = "upcoming";
+                let worstRank = -1;
+                statuses.forEach((s) => {
+                    const r = statusRank(s);
+                    if (r > worstRank) {
+                        worstRank = r;
+                        worst = s;
+                    }
+                });
+                return worst;
+            }
+
+            function updateMilestoneLineEditorStatusUI(lineEditor, status) {
+                const normalized = status || "upcoming";
+                lineEditor.classList.remove(
+                    "status-completed",
+                    "status-in-progress",
+                    "status-delayed",
+                    "status-upcoming",
+                );
+                lineEditor.classList.add(`status-${normalized}`);
+
+                const badge = lineEditor.querySelector(
+                    ".milestone-status-badge",
+                );
+                if (badge) {
+                    const label =
+                        normalized === "completed"
+                            ? "Completed"
+                            : normalized === "in-progress"
+                              ? "In Progress"
+                              : normalized === "delayed"
+                                ? "Delayed"
+                                : "Upcoming";
+                    badge.textContent = label;
+                }
+            }
+
+            function updateMilestoneYearCellStatusUI(rowId, year) {
+                const td = document.getElementById(
+                    `milestone-td-${rowId}-${year}`,
+                );
+                const container = document.getElementById(
+                    `milestone-lines-${rowId}-${year}`,
+                );
+                if (!td || !container) return;
+
+                const lineEditors = Array.from(
+                    container.querySelectorAll(".milestone-line-editor"),
+                );
+                const statuses = [];
+                lineEditors.forEach((lineEl) => {
+                    const text = (
+                        lineEl.querySelector(".milestone-line-text")?.value ||
+                        ""
+                    ).trim();
+                    const status =
+                        lineEl.querySelector(".milestone-line-status")?.value ||
+                        "upcoming";
+                    if (text.length > 0) statuses.push(status);
+                });
+
+                const worst = statuses.length
+                    ? worstStatus(statuses)
+                    : "upcoming";
+                td.classList.remove(
+                    "status-completed",
+                    "status-in-progress",
+                    "status-delayed",
+                    "status-upcoming",
+                );
+                td.classList.add(`status-${worst}`);
+            }
+
+            function onMilestoneLineStatusChange(rowId, year, selectEl) {
+                const lineEditor = selectEl.closest(".milestone-line-editor");
+                if (!lineEditor) return;
+                updateMilestoneLineEditorStatusUI(lineEditor, selectEl.value);
+                updateMilestoneYearCellStatusUI(rowId, year);
+            }
+
+            function removeMilestoneLine(rowId, year, removeBtnEl) {
+                const lineEditor = removeBtnEl.closest(
+                    ".milestone-line-editor",
+                );
+                if (!lineEditor) return;
+
+                const container = document.getElementById(
+                    `milestone-lines-${rowId}-${year}`,
+                );
+                if (!container) return;
+
+                lineEditor.remove();
+
+                // Keep at least one editor visible for UX
+                const remaining = container.querySelectorAll(
+                    ".milestone-line-editor",
+                );
+                if (remaining.length === 0) {
+                    const tmp = document.createElement("div");
+                    tmp.className = "milestone-line-editor status-upcoming";
+                    tmp.innerHTML = `
+                    <textarea class="milestone-line-text" rows="3" placeholder="One milestone per line"></textarea>
+                    <div class="milestone-line-status-row">
+                        <span class="milestone-status-badge" aria-hidden="true">Upcoming</span>
+                        <select class="milestone-line-select milestone-line-status" aria-label="Milestone status"
+                            onchange="onMilestoneLineStatusChange('${escAttr(rowId)}', '${escAttr(year)}', this)">
+                            <option value="upcoming" selected>Upcoming</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="delayed">Delayed</option>
+                        </select>
+                        <button type="button" class="btn-milestone-remove-line" onclick="removeMilestoneLine('${escAttr(rowId)}', '${escAttr(year)}', this)" aria-label="Remove milestone line">Remove</button>
+                    </div>
+                `;
+                    container.appendChild(tmp);
+                }
+
+                updateMilestoneYearCellStatusUI(rowId, year);
+            }
+
+            function addMilestoneLine(rowId, year) {
+                const container = document.getElementById(
+                    `milestone-lines-${rowId}-${year}`,
+                );
+                if (!container) return;
+
+                const tmp = document.createElement("div");
+                tmp.className = "milestone-line-editor status-upcoming";
+                tmp.innerHTML = `
+                <textarea class="milestone-line-text" rows="3" placeholder="One milestone per line"></textarea>
+                <div class="milestone-line-status-row">
+                    <span class="milestone-status-badge" aria-hidden="true">Upcoming</span>
+                    <select class="milestone-line-select milestone-line-status" aria-label="Milestone status"
+                        onchange="onMilestoneLineStatusChange('${escAttr(rowId)}', '${escAttr(year)}', this)">
+                        <option value="upcoming" selected>Upcoming</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="delayed">Delayed</option>
+                    </select>
+                    <button type="button" class="btn-milestone-remove-line" onclick="removeMilestoneLine('${escAttr(rowId)}', '${escAttr(year)}', this)" aria-label="Remove milestone line">Remove</button>
+                </div>
+            `;
+                container.appendChild(tmp);
+                updateMilestoneYearCellStatusUI(rowId, year);
+            }
+
+            function ensureMilestonesByDeptInitialized() {
+                if (
+                    !dashboardData.milestonesByDept ||
+                    typeof dashboardData.milestonesByDept !== "object"
+                ) {
+                    dashboardData.milestonesByDept = {};
+                }
+                if (!Array.isArray(dashboardData.milestoneExtraRows)) {
+                    dashboardData.milestoneExtraRows = [];
+                }
+                if (
+                    !dashboardData.rolesByDept ||
+                    typeof dashboardData.rolesByDept !== "object"
+                ) {
+                    dashboardData.rolesByDept = {};
+                }
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const initRow = (rowId, isDept) => {
+                    if (!dashboardData.milestonesByDept[rowId]) {
+                        dashboardData.milestonesByDept[rowId] = {};
+                    }
+                    const splitMilestoneLinesForStatus = (value) => {
+                        return (value || "")
+                            .toString()
+                            .split(/\r?\n/)
+                            .map((l) => (l ?? "").toString().trim())
+                            .filter((l) => l.length > 0);
+                    };
+                    years.forEach((year) => {
+                        if (
+                            dashboardData.milestonesByDept[rowId][year] ===
+                            undefined
+                        ) {
+                            let defaultValue = "";
+
+                            // Pre-populate key 2025 milestones based on your description (for departments only)
+                            if (isDept && year === 2025) {
+                                if (rowId === "gender") {
+                                    defaultValue =
+                                        "Launch of National Gender Policy and NAPWEE (Dowa, 5 Sept 2025)";
+                                } else if (rowId === "child") {
+                                    defaultValue =
+                                        "National Integrated ECD Policy launched (Dowa, 5 Sept 2025)";
+                                } else {
+                                    // Cross-cutting strategic milestone for all departments
+                                    defaultValue =
+                                        "Gender-disaggregated data collection strengthened across all departments";
+                                }
+                            } else if (isDept && year === 2027) {
+                                defaultValue =
+                                    "Mid-Term Review of Strategic Plan alignment with MIP-1 and SDGs";
+                            }
+
+                            dashboardData.milestonesByDept[rowId][year] =
+                                defaultValue;
+                        }
+
+                        // Initialize per-line status array aligned to non-empty milestone lines.
+                        const statusKey = `${year}_status`;
+                        const valueForSplit =
+                            dashboardData.milestonesByDept[rowId][year];
+                        const lines =
+                            splitMilestoneLinesForStatus(valueForSplit);
+
+                        if (
+                            !Array.isArray(
+                                dashboardData.milestonesByDept[rowId][
+                                    statusKey
+                                ],
+                            )
+                        ) {
+                            dashboardData.milestonesByDept[rowId][statusKey] =
+                                lines.map(() => "upcoming");
+                        } else {
+                            // Keep length aligned with line count.
+                            const arr =
+                                dashboardData.milestonesByDept[rowId][
+                                    statusKey
+                                ];
+                            const normalized = arr.slice(0, lines.length);
+                            while (normalized.length < lines.length)
+                                normalized.push("upcoming");
+                            dashboardData.milestonesByDept[rowId][statusKey] =
+                                normalized;
+                        }
+                    });
+                };
+
+                dashboardData.departments.forEach((dept) => {
+                    initRow(dept.id, true);
+                    if (!Array.isArray(dashboardData.rolesByDept[dept.id])) {
+                        dashboardData.rolesByDept[dept.id] = [];
+                    }
+                    dashboardData.rolesByDept[dept.id].forEach((role) =>
+                        initRow(role.id, false),
+                    );
+                });
+                (dashboardData.milestoneExtraRows || []).forEach((row) =>
+                    initRow(row.id, false),
+                );
+            }
+
+            function saveMilestones() {
+                ensureMilestonesByDeptInitialized();
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const roleIds = [];
+                dashboardData.departments.forEach((dept) => {
+                    const roles =
+                        (dashboardData.rolesByDept &&
+                            dashboardData.rolesByDept[dept.id]) ||
+                        [];
+                    roles.forEach((role) => roleIds.push(role.id));
+                });
+
+                const allRows = [
+                    ...dashboardData.departments.map((dept) => ({
+                        id: dept.id,
+                    })),
+                    ...roleIds.map((id) => ({ id })),
+                    ...(dashboardData.milestoneExtraRows || []).map((row) => ({
+                        id: row.id,
+                    })),
+                ];
+
+                allRows.forEach((rowInfo) => {
+                    years.forEach((year) => {
+                        const domRowId = escAttr(rowInfo.id);
+                        const container = document.getElementById(
+                            `milestone-lines-${domRowId}-${year}`,
+                        );
+                        if (!container) return;
+
+                        const editors = Array.from(
+                            container.querySelectorAll(
+                                ".milestone-line-editor",
+                            ),
+                        );
+                        const keptTexts = [];
+                        const keptStatuses = [];
+
+                        editors.forEach((editor) => {
+                            const text = (
+                                editor.querySelector(".milestone-line-text")
+                                    ?.value || ""
+                            ).trim();
+                            const status =
+                                editor.querySelector(".milestone-line-status")
+                                    ?.value || "upcoming";
+                            if (text.length > 0) {
+                                keptTexts.push(text);
+                                keptStatuses.push(status);
+                            }
+                        });
+
+                        const joined = keptTexts.join("\n");
+                        dashboardData.milestonesByDept[rowInfo.id][year] =
+                            joined;
+                        dashboardData.milestonesByDept[rowInfo.id][
+                            `${year}_status`
+                        ] = keptStatuses;
+                    });
+                });
+
+                dashboardData.lastUpdated = new Date().toISOString();
+                localStorage.setItem(
+                    "dashboardData",
+                    JSON.stringify(dashboardData),
+                );
+
+                showNotification("✅ Milestones saved successfully!");
+                updateDataPreview();
+            }
+
+            function exportMilestonesToCSV() {
+                ensureMilestonesByDeptInitialized();
+                const years = [];
+                for (let y = 2024; y <= 2030; y++) years.push(y);
+
+                const statusLabel = (status) =>
+                    status === "completed"
+                        ? "Completed"
+                        : status === "in-progress"
+                          ? "In Progress"
+                          : status === "delayed"
+                            ? "Delayed"
+                            : "Upcoming";
+
+                const header = ["Department", ...years, "Status"].join(",");
+                // View-only milestones: export just the department rows.
+                const allRows = dashboardData.departments.map((dept) => ({
+                    id: dept.id,
+                    name: dept.name,
+                }));
+
+                const rows = allRows.map((rowInfo) => {
+                    const cells = years.map((year) => {
+                        const value =
+                            (dashboardData.milestonesByDept[rowInfo.id] &&
+                                dashboardData.milestonesByDept[rowInfo.id][
+                                    year
+                                ]) ||
+                            "";
+                        const cleaned = (value || "")
+                            .toString()
+                            .replace(/"/g, '""');
+                        return `"${cleaned}"`;
+                    });
+
+                    const allStatuses = [];
+                    years.forEach((year) => {
+                        const yearKey = `${year}_status`;
+                        const arr =
+                            (dashboardData.milestonesByDept[rowInfo.id] &&
+                                dashboardData.milestonesByDept[rowInfo.id][
+                                    yearKey
+                                ]) ||
+                            [];
+                        const rawValue =
+                            (dashboardData.milestonesByDept[rowInfo.id] &&
+                                dashboardData.milestonesByDept[rowInfo.id][
+                                    year
+                                ]) ||
+                            "";
+                        const lineCount = (rawValue || "")
+                            .toString()
+                            .split(/\r?\n/)
+                            .map((l) => (l ?? "").toString().trim())
+                            .filter((l) => l.length > 0).length;
+
+                        if (Array.isArray(arr) && arr.length) {
+                            allStatuses.push(...arr.slice(0, lineCount));
+                        }
+                    });
+
+                    const worst = worstStatus(allStatuses);
+                    const statusCell = `"${statusLabel(worst).replace(/"/g, '""')}"`;
+
+                    const deptName = (rowInfo.name || "")
+                        .toString()
+                        .replace(/"/g, '""');
+                    return [`"${deptName}"`, ...cells, statusCell].join(",");
+                });
+
+                const csvContent = [header, ...rows].join("\n");
+                const blob = new Blob([csvContent], {
+                    type: "text/csv;charset=utf-8;",
+                });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `milestones-${new Date().toISOString().split("T")[0]}.csv`;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                showNotification(
+                    "✅ Milestones exported as CSV. You can open it in Excel.",
+                );
+            }
+
+            function addMilestonesRow() {
+                ensureMilestonesByDeptInitialized();
+                const name = prompt(
+                    'Enter a name for the new milestones row (e.g. "Cross-cutting programmes" or "National Gender Policy launch")',
+                );
+                if (!name) return;
+
+                const slugBase =
+                    name
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/^-+|-+$/g, "") || "custom-row";
+                let slug = slugBase;
+                let counter = 1;
+
+                const existsId = (id) =>
+                    dashboardData.departments.some((d) => d.id === id) ||
+                    (dashboardData.milestoneExtraRows || []).some(
+                        (r) => r.id === id,
+                    );
+
+                while (existsId(slug)) {
+                    slug = `${slugBase}-${counter++}`;
+                }
+
+                if (!Array.isArray(dashboardData.milestoneExtraRows)) {
+                    dashboardData.milestoneExtraRows = [];
+                }
+                dashboardData.milestoneExtraRows.push({ id: slug, name });
+
+                ensureMilestonesByDeptInitialized();
+                loadMilestonesViewOnly();
+                showNotification(
+                    "✅ New milestones row added. Remember to save the table.",
+                );
+            }
+
+            function addRoleRow() {
+                ensureMilestonesByDeptInitialized();
+                const deptOptions = dashboardData.departments
+                    .map((d) => `${d.id}: ${d.name}`)
+                    .join("\n");
+                const deptPick = prompt(
+                    `Enter the department id for this role:\n\n${deptOptions}\n\nExample: gender`,
+                );
+                if (!deptPick) return;
+
+                const deptId = deptPick.trim();
+                const dept = dashboardData.departments.find(
+                    (d) => d.id === deptId,
+                );
+                if (!dept) {
+                    alert("Unknown department id. Please try again.");
+                    return;
+                }
+
+                const roleName = prompt(
+                    `Enter the role name to add under "${dept.name}" (e.g., Director, M&E Officer):`,
+                );
+                if (!roleName) return;
+
+                const slugBase =
+                    roleName
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/^-+|-+$/g, "") || "role";
+                let slug = slugBase;
+                let counter = 1;
+                const roleIdPrefix = `${deptId}::`;
+
+                const existing = () => {
+                    const roles =
+                        (dashboardData.rolesByDept &&
+                            dashboardData.rolesByDept[deptId]) ||
+                        [];
+                    const allRoleIds = roles.map((r) => r.id);
+                    return new Set(allRoleIds);
+                };
+                const existingIds = existing();
+                while (existingIds.has(`${roleIdPrefix}${slug}`)) {
+                    slug = `${slugBase}-${counter++}`;
+                }
+
+                if (!Array.isArray(dashboardData.rolesByDept[deptId]))
+                    dashboardData.rolesByDept[deptId] = [];
+                const roleId = `${roleIdPrefix}${slug}`;
+                dashboardData.rolesByDept[deptId].push({
+                    id: roleId,
+                    name: roleName.trim(),
+                });
+
+                ensureMilestonesByDeptInitialized();
+                loadMilestonesViewOnly();
+                showNotification(
+                    "✅ Role row added. Remember to save the table.",
+                );
+            }
+
+            function removeRoleRow(deptId, roleId) {
+                ensureMilestonesByDeptInitialized();
+                const roles =
+                    (dashboardData.rolesByDept &&
+                        dashboardData.rolesByDept[deptId]) ||
+                    [];
+                const next = roles.filter((r) => r.id !== roleId);
+                dashboardData.rolesByDept[deptId] = next;
+                // Keep milestone data so it can be recovered if re-added, but you can delete it manually in JSON if desired.
+                loadMilestonesViewOnly();
+                showNotification("✅ Role row removed (not yet saved).");
+            }
+
+            function escapeHtml(value) {
+                const str = (value ?? "").toString();
+                return str
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            function exportJSON() {
+                const dataStr = JSON.stringify(dashboardData, null, 2);
+                const dataBlob = new Blob([dataStr], {
+                    type: "application/json",
+                });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `dashboard-data-${new Date().toISOString().split("T")[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                showNotification(
+                    "✅ Data exported successfully! Upload this file to GitHub.",
+                );
+            }
+
+            // Populate official documents list (from JSON if non-empty, else MoGCDSW folder defaults)
+            function renderDocumentsList() {
+                const list = document.getElementById("documentsList");
+                if (!list) return;
+
+                const fromData =
+                    dashboardData && Array.isArray(dashboardData.documents)
+                        ? dashboardData.documents
+                        : null;
+                const docs =
+                    fromData && fromData.length
+                        ? fromData
+                        : DEFAULT_OFFICIAL_DOCUMENTS;
+
+                list.innerHTML = docs
+                    .map(
+                        (doc) => `
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="${doc.href}" target="_blank" style="font-weight: 600; color: #1a237e; text-decoration: underline;">
+                        ${doc.title}
+                    </a>
+                    ${doc.description ? `<div style="font-size: 0.85rem; color: #555;">${doc.description}</div>` : ""}
+                </li>
+            `,
+                    )
+                    .join("");
+            }
+
+            function copyToClipboard() {
+                const dataStr = JSON.stringify(dashboardData, null, 2);
+                navigator.clipboard.writeText(dataStr).then(() => {
+                    showNotification("✅ Data copied to clipboard!");
+                });
+            }
+
+            function importJSON() {
+                const fileInput = document.getElementById("importFile");
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    alert("Please select a JSON file first.");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        dashboardData = importedData;
+                        localStorage.setItem(
+                            "dashboardData",
+                            JSON.stringify(dashboardData),
+                        );
+
+                        // Reload all forms
+                        renderDepartmentSelector();
+                        loadMilestonesViewOnly();
+                        updateDataPreview();
+
+                        showNotification("✅ Data imported successfully!");
+                    } catch (error) {
+                        alert("Error importing file: " + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            function updateDataPreview() {
+                // No on-screen JSON preview; only refresh documents list
+                renderDocumentsList();
+            }
+
+            function resetForm() {
+                if (selectedDeptId) {
+                    selectDepartment(selectedDeptId);
+                }
+            }
+
+            function showNotification(message, variant) {
+                const notification = document.getElementById("notification");
+                notification.textContent = message;
+                notification.classList.toggle(
+                    "notification-warn",
+                    variant === "warn",
+                );
+                notification.style.display = "block";
+                setTimeout(
+                    () => {
+                        notification.style.display = "none";
+                        notification.classList.remove("notification-warn");
+                    },
+                    variant === "warn" ? 5200 : 3500,
+                );
+            }
+
+            // Initialize on page load
+            init();
+        </script>
+    </body>
+</html>
